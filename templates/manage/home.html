@@ -1,0 +1,207 @@
+{% extends 'manage/base.html' %}
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="content-title">
+        <button class="upload-btn btn btn-info"><i class="iconfont icon-shangchuan"></i> 上传</button>
+        <button onclick="createFolder()" style="color: #5bc0de;" class="btn btn-default"><i
+                class="iconfont icon-wenjianjia"></i>新建文件夹
+        </button>
+        <div id="file-btn-group" class="btn-group" role="group" aria-label="...">
+            {#            <button style="color: #5bc0de;" class="btn btn-sm btn-default"><i class="iconfont icon-yidong"></i>移动#}
+            {#            </button>#}
+            <button style="color: #5bc0de;" class="repeat-del btn btn-sm btn-default"><i
+                    class="iconfont icon-shanchu"></i>删除
+            </button>
+            <button style="color: #5bc0de;" class="repeat-share btn btn-sm btn-default"><i
+                    class="iconfont icon-fenxiang"></i>分享
+            </button>
+        </div>
+        <div>
+            <input type="hidden" id="diskPath">
+            <ol class="breadcrumb" id="path">
+                <li>/disk</li>
+            </ol>
+        </div>
+        <div>
+            <div class="col-lg-4 col-sm-1"><input class="checks" id="check-box" onclick="checkall()" type="checkbox">
+                文件名
+            </div>
+            <div class="col-lg-4 hidden-xs">大小</div>
+            <div class="hidden-xs">修改时间</div>
+        </div>
+    </div>
+    <!--列表-->
+    <div id="listHeight">
+        <table class="table table-hover">
+
+            <tbody id="diskList">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            &nbsp;<span class="pull-left">消息:</span><span id="modal-msg"></span>
+                            <div class="col-lg-11"></div>
+                        </div>
+                        <div class="panel-body" id="modal-input"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                    </button>
+                    <button type="button" id="modal-del" style="display: none;" class="btn btn-warning pull-right">
+                        确定
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+
+    <div id="upload-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="upload-msg">提示 文件将上传至： </h5>
+                </div>
+                <div class="modal-body">
+                    <input type="file" class="file-loading" multiple id="upload-file"/>
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    {#                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+                    <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+        <div id="share-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            &nbsp;该操作会创建一个分享链接，点击确认继续
+                        </div>
+                        <div class="panel-body" id="share-msg"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-default" id="share-submit" >确认</button>
+                    <input type="hidden" id="share-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.repeat-share').click(function () {
+                var check = document.getElementsByName('check-addr');
+                var ch = [];
+                var data = [];
+                $.each(check, function (i, item) {
+                    if (item.checked == true) {
+                        ch.push(i);
+                        data.push($('.check' + i).attr('data-toggle'));
+                    }
+
+
+                });
+                //console.log(data);
+                if (ch.length > 0) {
+                    $('#share-modal').modal();
+                    $('#share-val').val(data);
+
+                }else{
+                    alert('请选择勾选需要操作项')
+                }
+            });
+
+            $('.repeat-del').click(function () {
+                var check = document.getElementsByName('check-addr');
+                var ch = [];
+                var data = [];
+                $.each(check, function (i, item) {
+                    if (item.checked == true) {
+                        ch.push(i);
+                        data.push($('.check' + i).attr('data-toggle'));
+                    }
+
+
+                });
+                //console.log(data);
+                if (ch.length > 0) {
+                    $('#modal-input').html('');
+                    $('#modal-msg').html('确认删除选中的文件（目录）？');
+                    $('#modal-val').val(data);
+                    $('#modal-del').attr('style', 'display: block');
+
+                    $('#modal').modal();
+                }else{
+                    $('#modal-input').html('');
+                    $('#modal-msg').html('请先选择文件(目录）！');
+                    $('#modal-del').attr('style', 'display: none');
+                    $('#modal').modal();
+                }
+            });
+            $('#share-submit').click(function () {
+                var key = $('#share-val').val();
+                $.ajax({
+                    url: '/disk/createShareUrl/',
+                    method: 'POST',
+                    data: {key: key},
+                    datatype: 'json',
+                    error: function () {
+                        $('#share-msg').html('抱歉获取数据错误');
+                    },
+                    success: function (resp) {
+                        if(resp.status == 'ok'){
+                            $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;http://yuncluod.com:8000/disk/share/'+resp.msg+'/');
+                        }else{
+                            $('#share-msg').html(resp.msg);
+                        }
+
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script src="/js/manage/home.js"></script>
+
+{% endblock %}

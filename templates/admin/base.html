@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <link rel="shortcut icon" type="image/png" href="/img/logo.png">
+    <title>易云-Your cloud disk</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/manage/index.css">
+    <link rel="stylesheet" href="/css/manage/font/iconfont.css">
+    <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/manage/font_hehahutu/iconfont.css">
+    <link rel="stylesheet" href="/bootstrap-fileinput/css/fileinput.min.css">
+    {% block style %}
+    
+    {% endblock %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--左边-->
+<div class="left">
+    <!--左边隐藏-->
+    <span class="left-bar" id="left-bar"><i class="fa fa-hand-o-left"></i></span>
+    <div id="left-hiden">
+        <h4>{{ session['show_name']|truncate(8, '...') if session['show_name'] else 'show name' }}</h4>
+        <div class="logo"><img src="/img/logo.png" alt=""></div>
+        <ul class="left-list" id="left-list">
+            <li><a href="#"><i class="fa fa-cloud"></i>云盘</a>
+                <ul>
+                    <li><a href="{{ url_for('manage.home') }}">文件</a></li>
+                    <li><a href="#">同步目录</a></li>
+                    <li><a href="{{ url_for('manage.trash') }}">回收站</a></li>
+                    <li><a class="" href="{{ url_for('admin.userInfo') }}">设置</a></li>
+                </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-users"></i> 用户组</a>
+                <ul>
+                    <li><a href="/admin/manageUsers/?key=group">组员列表</a></li>
+                    <li><a href="{{ url_for('manage.group') }}">群组管理</a></li>
+{#                    <li><a href="#">文件变更</a></li>#}
+                </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-comments"></i> 消息</a>
+                <ul>
+                    <li><a href="{{ url_for('admin.message') }}">留言</a></li>
+                    <li><a href="/admin/message/?key=sendMessage">发消息</a></li>
+                </ul>
+            </li>
+            <li><a href="#" id="diskSize">容量：10/500M</a></li>
+
+        </ul>
+    </div>
+</div>
+<div class="right">
+    <div class="container-fluid main">
+        <div class="row my-row">
+            <div class=" col-lg-12 title">
+                <!--模拟面包屑-->
+                <a href="#" class="sm-bar" id="sm-bar"><i class="iconfont">&#xe7bd;</i></a>
+                <div class="hidden-sm hidden-xs title-left">
+                    <a href="{{ url_for('manage.home') }}" title="首页"><i class="iconfont">&#xe603;</i></a>
+                    <a href="{{ url_for('admin.userInfo') }}" title="设置" class="title-a"><i class="iconfont icon-shezhi"></i></a>
+                    <a href="{{ url_for('admin.message') }}" title="消息"><i class="iconfont">&#xe616;</i><span style="background-color: coral"
+                                                                                 id="msg-info"
+                                                                                 class="badge"></span></a>
+                </div>
+
+                <div class="title-right">
+                    <input type="text" id="search-user" class="form-control search" placeholder="搜索用户...">
+                    <div>
+                        <span title="管理员"><i
+                                class="iconfont">&#xe7e1;:</i>{{ session['name']|truncate(8, '...') if session['name'] else 'name' }}</span>
+                        <a href="{{ url_for('admin.exit') }}" title="退出"><i class="iconfont">&#xe62f;</i></a>
+                    </div>
+                </div>
+            </div>
+            <!--类容部分-->
+            <div class="col-lg-12 content" id="content">
+                <!--标题-->
+                {% block content %}
+                
+                {% endblock %}
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JS部分-->
+
+<script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/bootstrap-fileinput/js/locales/zh.js"></script>
+
+<script src="/js/manage/index.js"></script>
+
+{% block script %}
+
+{% endblock %}
+<script>
+    $(document).ready(function () {
+       getmsgcount();
+    });
+    function getmsgcount() {
+         $('#msg-info').html('');
+        $.ajax({
+            url: '/admin/getMessage/',
+            error: function () {
+                console.log('error count');
+            },
+            success: function (resp) {
+                if(resp.status == 'ok'){
+                    if(resp.count == 0){
+                         $('#msg-info').html('')
+                    }else{
+                        $('#msg-info').html(resp.count)
+                    }
+
+                }else{
+                    $('#msg-info').html('')
+                }
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

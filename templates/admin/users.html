@@ -1,0 +1,341 @@
+{% extends 'admin/base.html' %}
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="content-title">
+        <div class="row">
+
+
+            <div class="tbl-pagin col-lg-3 pull-right">
+
+                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+                    <ul class="pagination" id="page-list">
+                        <li><a id="first-page" href="#"><<</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li class="paginate_button " aria-controls="DataTables_Table_0" tabindex="0"><a href="#">2</a>
+                        </li>
+                        <li class="paginate_button " aria-controls="DataTables_Table_0" tabindex="0"><a href="#">3</a>
+                        </li>
+                        <li class="paginate_button " aria-controls="DataTables_Table_0" tabindex="0"><a href="#">4</a>
+                        </li>
+                        <li class="paginate_button " aria-controls="DataTables_Table_0" tabindex="0"><a href="#">5</a>
+                        </li>
+                        <li class="paginate_button next" aria-controls="DataTables_Table_0" tabindex="0"
+                        ><a id="end-page" href="#">>></a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <input type="hidden" value="{{ group }}" id="group">
+        <div id="listHeight">
+
+            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+
+                <table class="table convert-data-table data-table dataTable no-footer" id="DataTables_Table_0"
+                       role="grid"
+                       aria-describedby="DataTables_Table_0_info">
+                    <thead>
+                    <tr role="row">
+
+                        <th>#</th>
+                        <th>用户名</th>
+                        <th>状态</th>
+                        <th>管理
+                        </th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody id="user-list">
+
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+
+                            <div class="col-lg-11">
+                                <table class="table">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tb-user">
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div  class="panel-body" id="modal-input"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="sub-btn" class="btn btn-warning pull-right">确定
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+{% endblock %}
+<input type="text">
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            getUserList(1);
+            $('#sub-btn').click(function () {
+                $.ajax({
+                    url: '/admin/setUser/',
+                    method: 'POST',
+                    data: {
+                        id: $('#user_id').val(),
+                        auth: $('#auth').val(),
+                        create: $('#create').val(),
+                        download: $('#download').val(),
+                        upload: $('#upload').val(),
+                        use_size: $('#use-size').val()
+                    },
+                    error: function () {
+                        alert('server error!')
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok') {
+                            $('#modal').modal('hide');
+                            $('#tb-user').html('');
+                        } else {
+                            alert('保存失败： ' + resp.msg)
+                        }
+                    }
+                });
+            });
+        });
+        function getUserList(page) {
+            console.log(page);
+            var group = $('#group').val();
+            $.ajax({
+                url: '/admin/userList/',
+                method: 'POST',
+                data: {page: page, group: group},
+                success: function (resp) {
+                    //console.log(resp);
+                    $('#user-list').html('');
+                    if (resp.status == 'ok') {
+                        var data = resp.data;
+                        if (resp.all <= 3) {
+                            var pa_list = [];
+                            for (var i = 1; i <= resp.all; i++) {
+                                pa_list.push(i);
+                            }
+                        } else {
+                            if (resp.now == 1) {
+                                var pa_list = [1, 2, 3, '...', resp.all]
+                            } else {
+                                if (resp.now + 1 == resp.all) {
+                                    var now_page = resp.now;
+                                    var pa_list = [now_page - 2, now_page - 1, now_page, '...', resp.all]
+                                } else {
+                                    if (resp.now == resp.all) {
+                                        var now_page = resp.now;
+                                        var pa_list = [1, '...', resp.all - 2, resp.all - 1, resp.all]
+                                    } else {
+                                        var now_page = resp.now;
+                                        var pa_list = [now_page - 1, now_page, now_page + 1, '...', resp.all]
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#page-list').html('');
+                        if (resp.now == 1) {
+                            $('#page-list').append('<li style="pointer-events: none;"><a id="last-page" href="#"><</a></li>');
+                        } else {
+                            $('#page-list').append('<li><a id="last-page" href="#"><</a></li>');
+                        }
+                        for (var i = 0; i < pa_list.length; i++) {
+                            if (pa_list[i] == '...') {
+                                $('#page-list').append('<li style="pointer-events: none;"><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
+                            } else {
+
+
+                                if (pa_list[i] == resp.now) {
+                                    $('#page-list').append('<li class="active"><a id="now-page" href="#">' + pa_list[i] + '</a></li>');
+                                } else {
+                                    $('#page-list').append('<li><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
+                                }
+                            }
+                        }
+                        if (resp.now == resp.all) {
+                            $('#page-list').append('<li style="pointer-events: none;"><a id="next-page" href="#">></a></li>');
+                        } else {
+                            $('#page-list').append('<li><a id="next-page" href="#">></a></li>');
+                        }
+
+
+                        $(document).ready(function () {
+                            $('#last-page').click(function () {
+                                var pg = parseInt($('#now-page').html()) - 1;
+                                getUserList(pg);
+                            });
+                            $('#next-page').click(function () {
+                                var pg = parseInt($('#now-page').html()) + 1;
+                                getUserList(pg);
+                            });
+                            $('.page-ch').click(function () {
+                                var pg = parseInt($(this).html());
+                                getUserList(pg);
+                            });
+                        });
+
+                        for (var i = 0; i < data.length; i++) {
+                            var da = data[i];
+                            if (da.auth == 3) {
+                                var au = '封禁';
+                            } else {
+                                var au = '正常';
+                            }
+
+                            $('#user-list').append('<tr><td>' + i + '</td><td>' + da.name + '</td><td>' + au + '</td><td><button class="ch-user btn btn-xs" data-toggle="' + da.id + '">修改</button>&nbsp;&nbsp;<button class="del-user btn btn-xs" data-toggle="' + da.id + '">清除</button></td></tr>');
+                        }
+
+                        $(document).ready(function () {
+                            $('.ch-user').click(function () {
+                                var key = $(this).attr('data-toggle');
+                                //console.log(key);
+                                $.ajax({
+                                    url: '/admin/setUser/?key=' + key,
+                                    method: 'GET',
+                                    datatype: 'json',
+                                    success: function (resp) {
+                                        console.log(resp);
+                                        var da = resp.data;
+                                        $('.modal-title').html('用户-' + da.name);
+                                        $('#tb-user').html('');
+                                        if (resp.auth == 0) {
+                                            $('#tb-user').append('<tr role="row"><th>用户级别：</th><th><select name="" value="1" id="auth" class="form-control"></select></th></tr>');
+
+                                        } else {
+                                            $('#tb-user').append('<tr role="row"><th>用户级别：</th><th><select disabled="disabled" name="" value="1" id="auth" class="form-control"></select></th></tr>');
+
+                                        }
+                                        var aus = ['管理员', '群组用户', '普通用户', '封禁'];
+                                        $('#auth').html('');
+                                        for (var i = 0; i < aus.length; i++) {
+                                            if (i == da.auth) {
+                                                $('#auth').append('<option selected="selected" value="' + i + '">' + aus[i] + '</option>')
+                                            } else {
+                                                $('#auth').append('<option value="' + i + '">' + aus[i] + '</option>')
+                                            }
+                                        }
+                                        $('#tb-user').append('<tr role="row"><th>创建文件：</th><th><select name="" value="1" id="create" class="form-control"></select></th></tr>');
+                                        var cre = ['否', '是'];
+                                        for (var i = 0; i < cre.length; i++) {
+                                            if (i == da.create) {
+                                                $('#create').append('<option selected="selected" value="' + i + '">' + cre[i] + '</option>')
+                                            } else {
+                                                $('#create').append('<option value="' + i + '">' + cre[i] + '</option>')
+                                            }
+                                        }
+                                        $('#tb-user').append('<tr role="row"><th>上传文件：</th><th><select name="" value="1" id="upload" class="form-control"></select></th></tr>');
+                                        var upl = ['否', '是'];
+                                        for (var i = 0; i < upl.length; i++) {
+                                            if (i == da.upload) {
+                                                $('#upload').append('<option selected="selected" value="' + i + '">' + upl[i] + '</option>')
+                                            } else {
+                                                $('#upload').append('<option value="' + i + '">' + upl[i] + '</option>')
+                                            }
+                                        }
+                                        $('#tb-user').append('<tr role="row"><th>下载文件：</th><th><select name="" value="1" id="download" class="form-control"></select></th></tr>');
+                                        var dow = ['否', '是'];
+                                        for (var i = 0; i < dow.length; i++) {
+                                            if (i == da.download) {
+                                                $('#download').append('<option selected="selected" value="' + i + '">' + dow[i] + '</option>')
+                                            } else {
+                                                $('#download').append('<option value="' + i + '">' + dow[i] + '</option>')
+                                            }
+                                        }
+                                        if (resp.auth == 0) {
+                                            $('#tb-user').append('<tr role="row"><th>空间大小：</th><th><select name="" value="1" id="use-size" class="form-control"></select></th></tr>');
+
+                                        } else {
+                                            $('#tb-user').append('<tr role="row"><th>空间大小：</th><th><select disabled="disabled" name="" value="1" id="use-size" class="form-control"></select></th></tr>');
+
+                                        }
+                                        var size = ['512', '1024', '1536'];
+                                        for (var i = 0; i < size.length; i++) {
+                                            if ((i + 1) * 512 == da.use_size) {
+                                                $('#use-size').append('<option selected="selected" value="' + i + '">' + size[i] + '</option>')
+                                            } else {
+                                                $('#use-size').append('<option value="' + i + '">' + size[i] + '</option>')
+                                            }
+                                        }
+                                        $('#tb-user').append('<tr role="row"><th>过期时间：</th><th>' + da.valid + '</th></tr>');
+                                        $('#tb-user').append('<input type="hidden" id="user_id" value="' + da.id + '">');
+                                    }
+                                });
+                                $('#modal').modal();
+
+                            });
+                        });
+                        $(document).ready(function () {
+                            $('.del-user').click(function () {
+                                var key = $(this).attr('data-toggle');
+                                $.ajax({
+                                    url: '/admin/delUser/',
+                                    method: 'post',
+                                    data: {key: key},
+                                    error: function () {
+                                        alert('服务器错误')
+                                    },
+                                    success: function (resp) {
+                                        if (resp.status == 'ok') {
+                                            var pg = parseInt($('#now-page').html());
+                                            getUserList(pg);
+                                        } else {
+                                            alert(resp.msg)
+                                        }
+                                    }
+                                });
+                            });
+                        });
+
+
+                    } else {
+                        $('#user-list').append('内部服务器错误！');
+                    }
+
+                }
+            });
+        }
+
+    </script>
+
+{% endblock %}
+

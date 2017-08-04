@@ -1,0 +1,358 @@
+{% extends 'admin/base.html' %}
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="listHeight">
+        <div class="content-title">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="" style="color: #555">{{ session['show_name'] }}的信息</h4>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item"><span class="label label-success">显示名：</span>&nbsp;{{ uu.name }}&nbsp;
+                            <i style="color: #1c94c4" class="ch-name fa fa-pencil-square-o"></i></li>
+                        <li class="list-group-item"><span class="label label-success">注册邮箱：</span>&nbsp;{{ uu.email }}&nbsp;
+                            <i style="color: #1c94c4" class="ch-email fa fa-pencil-square-o"></i></li>
+                        <li class="list-group-item"><span
+                                class="label label-success">最近一次登录时间：</span>&nbsp;{{ uu.login_time }}</li>
+                        <li class="list-group-item"><span
+                                class="label label-warning">有效期：</span>&nbsp;{{ uu.valid_date.strftime('%Y-%m-%d') }}
+                        </li>
+                        <li class="list-group-item"><span class="label label-warning"
+                                                          title="0: 超级用户，1：群组账户，2：普通用户">账户级别：</span>&nbsp;{{ uu.auth }}
+                        </li>
+                        <li class="list-group-item" id="corls"><span class="label label-danger">操作: </span>
+                            {% for ctrl in ctrls %}
+                                &nbsp;<span class="{{ ctrl[1] }} btn btn-xs btn-default"
+                                            style="color: #5acde2">{{ ctrl[0] }}</span>
+                            {% endfor %}
+
+
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="panel-footer">&nbsp;
+                    <span class="pull-right" style="font-size: 5px;">©2017 呵哈糊涂 </span>
+                </div>
+            </div>
+        </div>
+        <!--列表-->
+
+
+    </div>
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            &nbsp;<span class="pull-left">消息:</span><span id="modal-msg"></span>
+                            <div class="col-lg-11"></div>
+                        </div>
+                        <div class="panel-body" id="modal-input"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="rename-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                    </button>
+                    <button type="button" id="reemail-btn" style="display: none;" class="btn btn-warning pull-right">
+                        确定
+                    </button>
+                    <button type="button" id="repwd-btn" style="display: none;" class="btn btn-warning pull-right">
+                        确定
+                    </button>
+                    <button type="button" id="refgpwd-btn" style="display: none;" class="btn btn-warning pull-right">
+                        确定
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="key-model" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">邀请码</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+
+                            将该邀请码分享给好友，注册后自动加入群组(<span style="color: #f0ad4e">每次点击生成邀请码后以前的邀请码会作废,请谨记~</span>):
+                        </div>
+                        <div class="panel-body" id="modal-input">
+                            &nbsp;<span class="pull-left"></span><span style="color: #1c94c4" id="key-msg"></span>
+                            <div class="col-lg-11"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div id="clear-model" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            清除分享链
+                        </div>
+                        <div class="panel-body" id="modal-input">
+                            &nbsp;<span class="pull-left"></span><span style="color: #1c94c4" id="clear-msg"></span>
+                            <div class="col-lg-11"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+{% endblock %}
+<input type="text">
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.msg-show').click(function () {
+               window.location.href = '/admin/message/'
+            });
+
+            $('.create-msg').click(function () {
+                window.location.href = '/admin/message/?key=allUser'
+            });
+
+            $('.mg-user').click(function () {
+                window.location.href = '/admin/manageUsers/';
+            });
+
+            $('.msg-send').click(function () {
+               window.location.href = '/admin/message/?key=feedback'
+            });
+            // 清除分享
+            $('.clear-share').click(function () {
+                $.ajax({
+                    url: '/disk/clearShare/',
+                    error: function () {
+                        alert('服务器错误')
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok'){
+                            $('#clear-msg').html('已清除所有分享链');
+                            $('#clear-model').modal()
+                        }else{
+                            $('#clear-msg').html('清除失败');
+                            $('#clear-model').modal()
+                        }
+                    }
+                });
+            });
+            // 生成分邀请码
+            $('.create-key').click(function () {
+                $.ajax({
+                    url: '/admin/changeInfo/',
+                    method: 'POST',
+                    datetype: 'json',
+                    data: {reg_key: 'true'},
+                    error: function () {
+                        alert('服务器错误！')
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok') {
+                            $('#key-msg').html(resp.msg);
+                            $('#key-model').modal()
+                        } else {
+                            $('#key-msg').html(resp.msg);
+                            $('#key-model').modal()
+                        }
+                    }
+                });
+            });
+
+            $('.ch-name').click(function () {
+                $('#modal-msg').html('请输入新的显示名');
+                $('#modal-input').html('<input type="text" class="name-val">');
+                $('#rename-btn').attr('style', 'display: block;');
+                $('#reemail-btn').attr('style', 'display: none;');
+                $('#repwd-btn').attr('style', 'display: none;');
+                $('#refgpwd-btn').attr('style', 'display: none;');
+                $('#modal').modal();
+
+            });
+            $('.ch-email').click(function () {
+                $('#modal-msg').html('请输入新的邮箱，系统会向您输入的邮箱发送一封包含确认修改链接的邮件');
+                $('#modal-input').html('<input type="email" class="email-val">');
+                $('#rename-btn').attr('style', 'display: none;');
+                $('#reemail-btn').attr('style', 'display: block;');
+                $('#repwd-btn').attr('style', 'display: none;');
+                $('#refgpwd-btn').attr('style', 'display: none;');
+                $('#modal').modal();
+
+
+            });
+            $('.change-pwd').click(function () {
+                $('#modal-msg').html('请按照要求输入修改密码');
+                $('#modal-input').html('<input type="password" class="oldpwd-val" placeholder="旧密码"><input type="password" class="newpwd-val" placeholder="新密码">');
+                $('#rename-btn').attr('style', 'display: none;');
+                $('#reemail-btn').attr('style', 'display: none;');
+                $('#repwd-btn').attr('style', 'display: block;');
+                $('#refgpwd-btn').attr('style', 'display: none;');
+                $('#modal').modal();
+
+
+            });
+            $('.change-fgpwd').click(function () {
+                $('#modal-msg').html('请按要求修改密保');
+                $('#modal-input').html('<input type="password" class="pwd-val" placeholder="密码"><input type="text" class="fgpwd-val" placeholder="密保问题：最喜欢的水果？">');
+                $('#rename-btn').attr('style', 'display: none;');
+                $('#reemail-btn').attr('style', 'display: none;');
+                $('#repwd-btn').attr('style', 'display: none;');
+                $('#refgpwd-btn').attr('style', 'display: block;');
+                $('#modal').modal();
+
+
+            });
+            $('#rename-btn').click(function () {
+                var data = $('.name-val').val();
+                //console.log(data);
+                if (data.length > 0) {
+                    $.ajax({
+                        url: '/admin/changeInfo/',
+                        method: 'POST',
+                        datetype: 'json',
+                        data: {show_name: data},
+                        error: function () {
+                            alert('服务器错误！')
+                        },
+                        success: function (resp) {
+                            if (resp.status == 'ok') {
+                                $('#modal-msg').html('修改成功');
+                                window.location.reload();
+                            } else {
+                                $('#modal-msg').html(resp.msg);
+                            }
+                        }
+                    });
+                } else {
+                    $('#modal-msg').html('请输入内容');
+                }
+            });
+            $('#reemail-btn').click(function () {
+                var email = $('.email-val').val();
+                //console.log(data);
+                if (email.length > 0) {
+                    $('#modal-msg').html('正在发送，请稍后...');
+                    $.ajax({
+                        url: '/admin/changeInfo/',
+                        method: 'POST',
+                        datetype: 'json',
+                        data: {email: email},
+                        error: function () {
+                            alert('服务器错误！')
+                        },
+                        success: function (resp) {
+                            if (resp.status == 'ok') {
+                                $('#modal-msg').html('已发送成功，请前往对应邮箱完成修改');
+                                setTimeout(function () {
+
+                                    $('#modal').modal('hide');
+                                }, 2000);
+                            } else {
+                                $('#modal-msg').html(resp.msg);
+                            }
+                        }
+                    });
+                } else {
+                    $('#modal-msg').html('请输入内容');
+                }
+            });
+            $('#repwd-btn').click(function () {
+                var oldpwd = $('.oldpwd-val').val();
+                var newpwd = $('.newpwd-val').val();
+                //console.log(oldpwd);
+                //console.log(newpwd);
+                if (oldpwd.length > 0) {
+                    $.ajax({
+                        url: '/admin/changeInfo/',
+                        method: 'POST',
+                        datetype: 'json',
+                        data: {oldpwd: oldpwd, newpwd: newpwd},
+                        error: function () {
+                            alert('服务器错误！')
+                        },
+                        success: function (resp) {
+                            if (resp.status == 'ok') {
+                                $('#modal-msg').html('修改成功');
+                                window.location.reload();
+                            } else {
+                                $('#modal-msg').html(resp.msg);
+                            }
+                        }
+                    });
+                } else {
+                    $('#modal-msg').html('请输入内容');
+                }
+            });
+            $('#refgpwd-btn').click(function () {
+                var pwd = $('.pwd-val').val();
+                var fgpwd = $('.fgpwd-val').val();
+                //console.log(pwd);
+                //console.log(fgpwd);
+                if (pwd.length > 0) {
+                    $.ajax({
+                        url: '/admin/changeInfo/',
+                        method: 'POST',
+                        datetype: 'json',
+                        data: {pwd: pwd, fgpwd: fgpwd},
+                        error: function () {
+                            alert('服务器错误！')
+                        },
+                        success: function (resp) {
+                            if (resp.status == 'ok') {
+                                $('#modal-msg').html('修改成功');
+                                window.location.reload();
+                            } else {
+                                $('#modal-msg').html(resp.msg);
+                            }
+                        }
+                    });
+                } else {
+                    $('#modal-msg').html('请输入内容');
+                }
+            });
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'manage/base.html' %}
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="content-title">
+
+        <button title="彻底删除文件" style="color: #ac2925;" class="repeat-delete btn btn-sm btn-default"><i
+                class="iconfont icon-shanchu"></i>清除
+        </button>
+        <button title="恢复到网盘" style="color: #5bc0de;" class="repeat-recover btn btn-sm btn-default"><i
+                class="iconfont icon-huifu1"></i>&nbsp;恢复
+        </button>
+
+        <div>
+            <input type="hidden" id="diskPath">
+            <ol class="breadcrumb" id="path">
+                <li style="color: #6ce26c">回收站</li>
+                &nbsp;&nbsp;<span style="font-size: x-small">请在失效日期之前恢复文件（文件夹），过期将会被系统清除~</span>
+            </ol>
+        </div>
+        <div>
+            <ul class="nav nav-tabs nav-justified">
+                <li><div class="">
+                <input class="checks" id="check-box" onclick="checkall()" type="checkbox">
+                文件名
+            </div></li>
+                <li><div class="hidden-xs">大小</div></li>
+                <li><div class=" hidden-xs">文件夹</div></li>
+                <li><div class="hidden-xs">失效时间</div></li>
+            </ul>
+
+        </div>
+    </div>
+    <!--列表-->
+    <div id="listHeight">
+        <table class="table table-hover">
+            <tbody id="diskList">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            &nbsp;<span class="pull-left">消息:</span><span id="modal-msg"></span>
+                            <div class="col-lg-11"></div>
+                        </div>
+                        <div class="panel-body" id="modal-input"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="recover-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                    </button>
+                    <button type="button" id="delete-btn" style="display: none;" class="btn btn-warning pull-right">
+                        确定
+                    </button>
+                    <input type="hidden" id="modal-val">
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+{% endblock %}
+
+
+{% block script %}
+
+    <script>
+        $(document).ready(function () {
+            getSize();
+            requestData();
+            $('.repeat-delete').click(function () {
+                var check = document.getElementsByName('check-addr');
+                var ch = [];
+                var data = [];
+                $.each(check, function (i, item) {
+                    if (item.checked == true) {
+                        ch.push(i);
+                        data.push($('.check' + i).attr('data-toggle'));
+                    }
+
+
+                });
+                //console.log(data);
+                if (ch.length > 0) {
+                    $('#delete-btn').attr('style', 'display: block');
+                    $('#recover-btn').attr('style', 'display: none');
+
+                    $('#modal-msg').html('确定删除清除文件（文件夹）, 此操作不可恢复');
+                    $('#modal').modal();
+                    $('#modal-val').val(data);
+
+                } else {
+                    alert('请选择勾选需要操作')
+                }
+            });
+            $('.repeat-recover').click(function () {
+                var check = document.getElementsByName('check-addr');
+                var ch = [];
+                var data = [];
+                $.each(check, function (i, item) {
+                    if (item.checked == true) {
+                        ch.push(i);
+                        data.push($('.check' + i).attr('data-toggle'));
+                    }
+
+
+                });
+                //console.log(data);
+                if (ch.length > 0) {
+                    $('#recover-btn').attr('style', 'display: block');
+                    $('#delete-btn').attr('style', 'display: none');
+
+                    $('#modal-msg').html('确定恢复文件（文件夹）?');
+                    $('#modal').modal();
+                    $('#modal-val').val(data);
+
+                } else {
+                    alert('请选择勾选需要操作')
+                }
+            });
+            $('#delete-btn').click(function () {
+                var key = $('#modal-val').val();
+                $.ajax({
+                    url: '/disk/dropFile/',
+                    method: 'POST',
+                    data: {key: key},
+                    error: function () {
+                        $('#modal-msg').html('服务器错误！');
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok'){
+                            requestData();
+                            getSize();
+                            $('#modal').modal('hide');
+                        }else{
+                            $('#modal-msg').html(resp.msg);
+                        }
+                    }
+                });
+            });
+            $('#recover-btn').click(function () {
+                var key = $('#modal-val').val();
+                $.ajax({
+                    url: '/disk/recoverFile/',
+                    method: 'POST',
+                    data: {key: key},
+                    error: function () {
+                        $('#modal-msg').html('服务器错误！');
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok'){
+                            requestData();
+                            getSize();
+                            $('#modal').modal('hide');
+                        }else{
+                            $('#modal-msg').html(resp.msg);
+                        }
+                    }
+                });
+            })
+        });
+        // 获取容量
+        function checkall() {
+            var check = document.getElementsByName('check-addr');
+            var allcheck = document.getElementById('check-box').checked;
+            for (var i = 0; i < check.length; i++) {
+                check[i].checked = allcheck
+            }
+        }
+
+
+        function requestData() {
+            $.ajax({
+                url: '/disk/trash/',
+                method: 'POST',
+                datatype: 'json',
+                error: function () {
+                    window.location.href = '/404/';
+                },
+                success: function (resp) {
+                    if (resp.status == 'ok') {
+                        console.log(resp);
+                        $('#diskList').html('');
+                        var folders = resp.folders;
+                        var files = resp.file;
+                        if (folders.length > 0) {
+                            for (var i = 0; i < folders.length; i++) {
+                                var data = resp.folders[i];
+
+                                $('#diskList').append('<tr class="folder-ch" ><th style="color: #5bc0de;"><input name="check-addr" value=folder."' + data.id + '"  type="checkbox"><input class="check' + i + '" data-toggle="folder.' + data.id + '" type="hidden" id="folder-key' + data.id + '" value="' + data.foldername + '">&nbsp;&nbsp;<i class="iconfont icon-wenjianjia1"></i>' + data.foldername + '</th><th class=""><i title="彻底删除" style="color: #5bc0de;" data-template="' + data.foldername + '" data-toggle="folder.' + data.id + '" class="delete-ch iconfont icon-shanchu"></i>&nbsp;<i title="恢复" style="color: #5bc0de;" data-toggle="folder.' + data.id + '" data-template="' + data.foldername + '"  class="recover-ch iconfont icon-huifu"></i></i>&nbsp;-</th><th style="font-size: small" class="hidden-xs hidden-sm">' + data.group_folder + '</th><th style="font-size: small" class="hidden-xs hidden-sm"> ' + data.update_time + '</th></tr>');
+                            }
+                        }
+                        if (files.length > 0) {
+                            for (var i = 0; i < files.length; i++) {
+                                var data = resp.file[i];
+                                var flen = folders.length + i;
+                                $('#diskList').append('<tr><th><input name="check-addr" value="file.' + data.id + '" type="checkbox"><input class="check' + flen + '" data-toggle="file.' + data.id + '" type="hidden" id="file-key' + data.id + '" value="' + data.id + '"><span style="cursor: pointer">&nbsp;&nbsp;<i class="iconfont icon-wenjian"></i>' + data.showname + '</span></th><th class=""><i title="彻底删除" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="delete-ch iconfont icon-shanchu"></i>&nbsp; <i title="恢复" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="recover-ch iconfont icon-huifu"></i>&nbsp;' + data.file_size + '</th><th style="font-size: small" class="hidden-xs hidden-sm">' + data.group_folder + '</th><th style="font-size: small" class="hidden-xs hidden-sm">' + data.update_time + '</th></tr>');
+                            }
+                        }
+                        $('.delete-ch').click(function () {
+                            $('#delete-btn').attr('style', 'display: block');
+                            $('#recover-btn').attr('style', 'display: none');
+                            var data = $(this).attr('data-toggle');
+                            var name = $(this).attr('data-template');
+                            $('#modal-msg').html('确定删除清除文件（文件夹） ' + name + ', 此操作不可恢复');
+                            $('#modal').modal();
+                            $('#modal-val').val(data);
+                        });
+                        $('.recover-ch').click(function () {
+                            $('#recover-btn').attr('style', 'display: block');
+                            $('#delete-btn').attr('style', 'display: none');
+                            var data = $(this).attr('data-toggle');
+                            var name = $(this).attr('data-template');
+                            $('#modal-msg').html('确定恢复文件（文件夹） ' + name + '');
+                            $('#modal').modal();
+                            $('#modal-val').val(data);
+                        });
+
+                    } else {
+                        $('#diskList').html(resp.msg);
+                    }
+                }
+            });
+        }
+    </script>
+
+
+{% endblock %}

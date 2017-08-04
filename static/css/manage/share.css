@@ -1,0 +1,41 @@
+#nav {
+    background-color: #eff4f8;
+    border-bottom: 1px solid #dee9f8;
+}
+
+body, html {
+    background-color: #edf1f5;
+    height: auto;
+}
+
+@media screen and(max-width: 568px) {
+    body .main .left {
+        height: 100%;
+        width: 450px;
+        background-color: #fff;
+        float: left;
+    }
+}
+
+.main {
+    width: auto;
+    height: 500px;
+    margin: 60px auto 0 auto;
+    border: 1px solid #dee9f8;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
+
+.left {
+    height: 100%;
+    width: 900px;
+    background-color: #fff;
+    float: left;
+}
+
+.right {
+    height: 100%;
+    width: 300px;
+    background-color: #f3f8ff;
+    float: right;
+}

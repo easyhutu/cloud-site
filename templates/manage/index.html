@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <link rel="shortcut icon" type="image/png" href="/img/logo.png">
+    <title>易云-Your cloud disk</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/manage/index.css">
+    <link rel="stylesheet" href="/css/manage/font/iconfont.css">
+    <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/manage/font_hehahutu/iconfont.css">
+    <link rel="stylesheet" href="/bootstrap-fileinput/css/fileinput.min.css">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--左边-->
+<div class="left">
+    <!--左边隐藏-->
+    <span class="left-bar" id="left-bar"><i class="fa fa-hand-o-left"></i></span>
+    <div id="left-hiden">
+        <h4>{{ session['show_name'] if session['show_name'] else 'show name' }}</h4>
+        <div class="logo"><img src="/img/logo.png" alt=""></div>
+        <ul class="left-list" id="left-list">
+            <li><a href="#"><i class="fa fa-cloud"></i>云盘</a>
+                <ul>
+                    <li><a href="{{ url_for('manage.home') }}">文件</a></li>
+                    <li><a href="#">同步目录</a></li>
+                    <li><a href="#">回收站</a></li>
+                    <li><a class="upload-btn" href="#">上传文件</a></li>
+                </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-users"></i> 用户组</a>
+                <ul>
+                    <li><a href="#">组员列表</a></li>
+                    <li><a href="#">组员管理</a></li>
+                    <li><a href="#">文件变更</a></li>
+                </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-comments"></i> 留言</a>
+                <ul>
+                    <li><a href="#">留言列表</a></li>
+                    <li><a href="#">发送系统消息</a></li>
+                </ul>
+            </li>
+            <li><a href="#" id="diskSize">容量：10/500M</a></li>
+        </ul>
+    </div>
+</div>
+<div class="right">
+    <div class="container-fluid main">
+        <div class="row my-row">
+            <div class=" col-lg-12 title">
+                <!--模拟面包屑-->
+                <a href="#" class="sm-bar" id="sm-bar"><i class="iconfont">&#xe7bd;</i></a>
+                <div class="hidden-sm hidden-xs title-left">
+                    <a href="{{ url_for('manage.home') }}" title="首页"><i class="iconfont">&#xe603;</i></a>
+                    <a href="#" title="设置" class="title-a"><i class="iconfont icon-shezhi"></i></a>
+                    <a href="#" title="消息"><i class="iconfont">&#xe616;</i><span style="background-color: coral"
+                                                                                 id="msg-info"
+                                                                                 class="badge">2</span></a>
+                </div>
+
+                <div class="title-right">
+                    <input type="text" class="form-control search" placeholder="搜索文件...">
+                    <div>
+                        <span title="管理员"><i
+                                class="iconfont">&#xe7e1;:</i>{{ session['name'] if session['name'] else 'name' }}</span>
+                        <a href="{{ url_for('admin.exit') }}" title="退出"><i class="iconfont">&#xe62f;</i></a>
+                    </div>
+                </div>
+            </div>
+            <!--类容部分-->
+            <div class="col-lg-12 content" id="content">
+                <!--标题-->
+                <div class="content-title">
+                    <button class="upload-btn btn btn-info"><i class="iconfont icon-shangchuan"></i> 上传</button>
+                    <button onclick="createFolder()" style="color: #5bc0de;" class="btn btn-default"><i
+                            class="iconfont icon-wenjianjia"></i>新建文件夹
+                    </button>
+                    <div id="file-btn-group" class="btn-group" role="group" aria-label="...">
+                        <button style="color: #5bc0de;" class="btn btn-sm btn-default"><i class="iconfont icon-yidong"></i>移动</button>
+                        <button style="color: #5bc0de;" class="btn btn-sm btn-default"><i class="iconfont icon-shanchu"></i>删除</button>
+                        <button style="color: #5bc0de;" class="btn btn-sm btn-default"><i class="iconfont icon-fenxiang"></i>分享
+                        </button>
+                    </div>
+                    <div>
+                        <input type="hidden" id="diskPath">
+                        <ol class="breadcrumb" id="path">
+                            <li>/disk</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <div class="col-lg-6 col-sm-1"><input class="checks" id="check-box" onclick="checkall()" type="checkbox"> 文件名
+                        </div>
+                        <div class="col-lg-3 hidden-xs">大小</div>
+                        <div class="hidden-xs">修改时间</div>
+                    </div>
+                </div>
+                <!--列表-->
+                <div id="listHeight">
+                    <table class="table table-hover">
+
+                        <tbody id="diskList">
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="panel panel-default">
+                    <div class="panel-body" id="modal-input">input</div>
+                    <div class="col-lg-11">消息：<span id="modal-msg"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+
+<div id="upload-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="upload-msg">提示 文件将上传至： </h5>
+            </div>
+            <div class="modal-body">
+                <input type="file" class="file-loading" multiple id="upload-file"/>
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                {#                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+                <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- JS部分-->
+
+<script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/bootstrap-fileinput/js/locales/zh.js"></script>
+
+<script src="/js/manage/index.js"></script>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        getList();
+        getSize();
+
+
+        var path = $('#diskPath').val();
+        console.log(path);
+        //maxFileSize 文件大小单位k
+        $('#upload-file').fileinput({
+            uploadUrl: '/disk/upload/',
+            uploadExtraData: function (previewId, index) {
+                var data = {path: $('#diskPath').val()};
+                return data;
+            },
+            allowedFileExtensions: ["py", "json", "txt", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg"],
+            language: "zh",
+            maxNumberOfFiles: 2,
+            maxFileSize: 100 * 1024,
+            showUpload: true,
+            maxFileCount: 10,
+            success: function (fileInfo) {
+                $('#upload-msg').html('操作状态：' + fileInfo.data);
+            }
+        });
+        $('#upload-file').on('fileuploaded', function (event, data) {
+            var response = data.response;
+            console.log(response);
+            $('#upload-msg').html('操作状态：' + response.msg);
+            getList();
+        });
+        $('.upload-btn').click(function () {
+            var path = $('#diskPath').val();
+            $('#upload-msg').html('提示 文件将上传至：' + path);
+            $('#upload-modal').modal();
+        });
+    });
+
+
+</script>

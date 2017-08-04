@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>易云-分享自己的云</title>
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/manage/share.css">
+    <link rel="shortcut icon" type="image/png" href="/img/logo.png">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/manage/font_hehahutu/iconfont.css">
+    <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" id="nav">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="navbar-brand">易云-来自朋友的分享</span>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">关于</a></li>
+                <li><a href="/disk/home/">登录</a></li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="main">
+            <div class="left" id="left">
+                <input type="hidden" id="key" value="{{ key }}">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span>{{ name }}</span> 的分享 &nbsp; 有效期： {{ share_file.vail_date.strftime('%Y-%m-%d') }}
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-body"><a  href="/disk/share/{{ key }}/"><i class="fa fa-arrow-left"></i>根目录</a></div>
+                        <table class="table table-hover">
+                            {% for foldername in foldernames %}
+                                <tr>
+                                    <th>
+                                        <a style="color: #9acfea"
+                                           href="/disk/share/{{ key }}/?folderId={{ foldername.id }}">{{ foldername.folder_name }}</a>
+                                    </th>
+                                    <th><a  style="color: #9acfea" href="">-</a></th>
+                                </tr>
+
+                            {% endfor %}
+                            {% for filename in filenames %}
+                                <tr>
+                                    <th style="color: #8c8c8c">{{ filename.show_name }}
+
+                                    </th>
+                                    <th><a style="color: #9acfea" href="/disk/shareDownload/{{ key }}/?fileId={{ filename.id }}"><i class="fa fa-download">下载</i></a></th>
+                                </tr>
+                            {% endfor %}
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--
+                <div class="right hidden-xs panel">广告位，联系:mengjianhua93@gmail.com</div>
+                -->
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script>
+    var width = $(document).width();
+    if (width <= 768) {
+        $(".left").width("350px")
+    }
+</script>
+</body>
+</html>

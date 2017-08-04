@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/png" href="/img/logo.png">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>易云-Your cloud disk</title>
+
+    <!-- Bootstrap -->
+    {#    <link rel="stylesheet" href="../css/bootstrap.css">#}
+    {#    <link rel="stylesheet" href="../css/admin.css">#}
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/manage/index.css">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="login">
+    <h3>输入邀请码</h3>
+    <form action="/admin/joinGroup/" method="post" class="form-horizontal">
+        {% with message = get_flashed_messages() %}
+            {% if message %}
+                {% for msg in message %}
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert">&times;</a>
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="text" name="key" class="form-control" placeholder="邀请码">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <div class="col-lg-6  col-lg-offset-3 col-sm-10 col-sm-offset-1">
+                <button class="btn btn-success btn-block">确认</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="login-img">
+    <ul>
+        <li class="img1"></li>
+        <li class="img2"></li>
+        <li class="img3"></li>
+    </ul>
+</div>
+
+<!-- JS部分-->
+<script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+
+<script src="/js/manage/index.js"></script>
+</body>
+</html>

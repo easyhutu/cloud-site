@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/png" href="/img/logo.png">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>易云-Your cloud disk</title>
+
+    <!-- Bootstrap -->
+    {#    <link rel="stylesheet" href="../css/bootstrap.css">#}
+    {#    <link rel="stylesheet" href="../css/admin.css">#}
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/admin/register.css">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn"t work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="login">
+    <h3>注册, 开启属于自己的空间^_^</h3>
+    <form id="regform" action="" method="post" class="form-horizontal">
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <span id="group_name">{{ group_name }}</span>
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="text" id="name" name="name" class="form-control" placeholder="用户名">
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="text" id="show_name" name="show_name" class="form-control" placeholder="显示名">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="password" id="password" name="password" class="form-control" placeholder="密码">
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="password" id="repeat_password" name="repeat_password" class="form-control"
+                       placeholder="重复密码">
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="email" id="email" name="email" class="form-control" placeholder="邮箱">
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-10 col-sm-offset-1">
+                <input type="text" id="forget_password" name="forget_password" class="form-control"
+                       placeholder="密保问题，请输入你最爱吃的一种食物">
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="">
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree">同意用户协议<span title="您同意注册，意味着您将遵守国家相关法律法规， 本站对用户协议拥有最终解释权。" class="badge">？</span></label>
+                <a href="{{ url_for('.login') }}">登录</a>
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-lg-4 col-lg-offset-4 col-sm-10 col-sm-offset-1">
+                <button type="submit" class="btn btn-success btn-block">注册</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="login-img">
+    <ul>
+        <li class="img1"></li>
+        <li class="img2"></li>
+        <li class="img3"></li>
+    </ul>
+</div>
+
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <div style="display: none;" class="progress">
+                    <div id="progress-msg" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="2"
+                         aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 1%;">
+                        1%
+                    </div>
+                </div>
+                <p id="modal-msg"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                </button>
+                <input type="hidden" id="submit-data" name="" value="">
+                <input type="hidden" id="submit-obj" name="" value="">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+
+<!-- JS部分-->
+{#<script src="../js/jquery.js"></script>#}
+{#<script src="../js/bootstrap.min.js"></script>#}
+{#<script src="../js/admin.js"></script>#}
+
+<script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+
+<script src="/js/validate/jquery.validate.min.js"></script>
+<script src="/js/validate/additional-methods.min.js"></script>
+{#<script src="https://cdn.bootcss.com/jquery-validate/1.16.0/jquery.validate.min.js"></script>#}
+{#<script src="https://cdn.bootcss.com/jquery-validate/1.16.0/additional-methods.min.js"></script>#}
+{#<script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>#}
+{#<script src="//cdn.bootcss.com/jquery-validate/1.15.1/additional-methods.min.js"></script>#}
+<script src="/js/manage/index.js"></script>
+</body>
+</html>
+<script>
+    function getCookie(NameOfCookie) {
+
+// 首先我们检查下cookie是否存在.
+// 如果不存在则document.cookie的长度为0
+
+        if (document.cookie.length > 0) {
+
+// 接着我们检查下cookie的名字是否存在于document.cookie
+
+// 因为不止一个cookie值存储,所以即使document.cookie的长度不为0也不能保证我们想要的名字的cookie存在
+//所以我们需要这一步看看是否有我们想要的cookie
+//如果begin的变量值得到的是-1那么说明不存在
+
+            begin = document.cookie.indexOf(NameOfCookie + "=");
+            if (begin != -1) {
+
+// 说明存在我们的cookie.
+
+                begin += NameOfCookie.length + 1;//cookie值的初始位置
+                end = document.cookie.indexOf(";", begin);//结束位置
+                if (end == -1) end = document.cookie.length;//没有;则end为字符串结束位置
+                return unescape(document.cookie.substring(begin, end));
+            }
+        }
+        return null;
+
+// cookie不存在返回null
+    }
+    $(document).ready(function () {
+        $("#regform").validate({
+            rules: {
+                name: {required: true, minlength: 3, maxlength: 15, remote: "/admin/checkuser/"},
+                show_name: {required: true, minlength: 3, maxlength: 15},
+                password: {required: true, minlength: 3, maxlength: 15},
+                repeat_password: {required: true, equalTo: "#password"},
+                email: {required: true, email: true},
+                agree: {required: true}
+
+            },
+            messages: {
+                name: {required: "用户名不能为空", minlength: "字符长度不能小于3", maxlength: "字符长度不能大于15", remote: "用户名已存在"},
+                show_name: {required: "显示名不能为空", minlength: "字符长度不能小于3", maxlength: "字符长度不能大于15"},
+                password: {required: "密码不能为空", minlength: "字符长度不能小于3", maxlength: "字符长度不能大于15"},
+                repeat_password: {required: "密码不能为空", equalTo: "两次输入的密码不一致"},
+                email: {required: "邮箱不能为空", email: "邮箱格式不正确"},
+                agree: {required: "您必须同意才能注册"}
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: '/admin/register/',
+                    method: 'POST',
+                    data: $('form').serialize(),
+                    error: function () {
+                        $('#modal-msg').html('内部服务器错误！');
+                        $('#modal').modal();
+                    },
+                    success: function (resp) {
+                        if (resp.status == 'ok') {
+                            $('#modal-msg').html('注册成功，3秒后跳转到登录页');
+                            $('#modal').modal();
+                            setTimeout(function () {
+                                window.location.href = '/admin/login/';
+                            }, 3000)
+                        }
+                        else {
+                            $('#modal-msg').html(resp.msg);
+                            $('#modal').modal();
+                        }
+
+                    }
+                })
+            }
+        });
+
+    });
+</script>
