@@ -44,7 +44,8 @@ $(document).ready(function () {
         maxFileSize: 100 * 1024,
         showUpload: true,
         maxFileCount: 10,
-        showPreview: false,
+        showPreview: true,
+        allowedPreviewTypes: ['image', 'video', 'audio'],
         success: function (fileInfo) {
             $('#upload-msg').html('操作状态：' + fileInfo.data);
         }
