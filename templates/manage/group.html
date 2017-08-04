@@ -6,320 +6,339 @@
 
 {% block content %}
 
-    <div class="content-title">
-        <button id="upload-btn" class=" btn btn-info"><i class="iconfont icon-shangchuan"></i>上传至群组</button>
-        <button id="create" style="color: #5bc0de;" class="btn btn-default"><i
-                class="iconfont icon-wenjianjia"></i>新建群组
+<div class="content-title">
+    <button id="upload-btn" class=" btn btn-info"><i class="iconfont icon-shangchuan"></i>上传至群组</button>
+    <button id="create" style="color: #5bc0de;" class="btn btn-default"><i
+            class="iconfont icon-wenjianjia"></i>新建群组
+    </button>
+    {#
+    <div id="file-btn-group" class="btn-group" role="group" aria-label="...">#}
+        {#
+        <button style="color: #5bc0de;" class="repeat-del btn btn-sm btn-default"><i#}
+            {# class="iconfont icon-shanchu"></i>删除#}
+            {#
         </button>
-        {#        <div id="file-btn-group" class="btn-group" role="group" aria-label="...">#}
-        {#            <button style="color: #5bc0de;" class="repeat-del btn btn-sm btn-default"><i#}
-        {#                    class="iconfont icon-shanchu"></i>删除#}
-        {#            </button>#}
-        {#        </div>#}
-        <div>
-            <input type="hidden" id="diskPath">
-            <ol class="breadcrumb" id="path">
-                <li><a href="">群组管理</a></li>
-            </ol>
+        #}
+        {#
+    </div>
+    #}
+    <div>
+        <input type="hidden" id="diskPath">
+        <ol class="breadcrumb" id="path">
+            <li><a href="">群组管理</a></li>
+        </ol>
+    </div>
+    {#
+    <div>#}
+        {#
+        <div class="col-lg-4 col-sm-1"><input class="checks" id="check-box" onclick="checkall()" type="checkbox">#}
+            {# 群组名#}
+            {#
         </div>
-        {#        <div>#}
-        {#            <div class="col-lg-4 col-sm-1"><input class="checks" id="check-box" onclick="checkall()" type="checkbox">#}
-        {#                群组名#}
-        {#            </div>#}
-        {#            <div class="col-lg-4 hidden-xs">操作</div>#}
-        {#            <div class="hidden-xs">创建时间</div>#}
-        {#        </div>#}
+        #}
+        {#
+        <div class="col-lg-4 hidden-xs">操作</div>
+        #}
+        {#
+        <div class="hidden-xs">创建时间</div>
+        #}
+        {#
     </div>
-    <!--列表-->
-    <div id="listHeight">
-        <table class="table table-hover">
+    #}
+</div>
+<!--列表-->
+<div id="listHeight">
+    <table class="table table-hover">
 
-            <tbody id="diskList">
+        <tbody id="diskList">
 
-            </tbody>
-        </table>
-    </div>
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提示</h4>
-                </div>
-                <div class="modal-body">
+        </tbody>
+    </table>
+</div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            &nbsp;<span class="pull-left">消息:</span><span id="modal-msg">输入名称，创建群组</span>
-                            <div class="col-lg-11"></div>
-                        </div>
-                        <div class="panel-body" id="modal-input">
-                            <input type="text" maxlength="30" id="group-name">
-                        </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        &nbsp;<span class="pull-left">消息:</span><span id="modal-msg">输入名称，创建群组</span>
+                        <div class="col-lg-11"></div>
+                    </div>
+                    <div class="panel-body" id="modal-input">
+                        <input type="text" maxlength="30" id="group-name">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" id="submit-create" class="btn btn-warning pull-right">确定
-                    </button>
-                    <input type="hidden" id="modal-val">
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="submit-create" class="btn btn-warning pull-right">确定
+                </button>
+                <input type="hidden" id="modal-val">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
 
-    <div id="upload-modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="upload-msg">提示 文件将上传至： </h5>
-                </div>
-                <div id="up-body" class="modal-body">
+<div id="upload-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="upload-msg">提示 文件将上传至： </h5>
+            </div>
+            <div id="up-body" class="modal-body">
 
-                    <p></p>
-                </div>
-                <input class="hidden" id="group-id" value="none" data-toggle="">
-                <div class="modal-footer">
-                    {#                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
-                    <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                <p></p>
+            </div>
+            <input class="hidden" id="group-id" value="none" data-toggle="">
+            <div class="modal-footer">
+                {#
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                #}
+                <button type="button" id="submit-btn" style="display: none;" class="btn btn-warning pull-right">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 {% endblock %}
 
 
 {% block script %}
-    <script>
-        $(document).ready(function () {
-            $('#upload-btn').click(function () {
-                var check = $('#group-id').val();
-                if (check == 'none') {
-                    $('#upload-msg').html('请进入群组详情后再上传文件');
-                    $('#upload-modal').modal()
-                } else {
-                    $('#up-body').html('<input type="file" class="file-loading" multiple id="upload-file"/>');
-                    $('#upload-file').fileinput({
-                        uploadUrl: '/disk/upload/',
-                        uploadExtraData: function (previewId, index) {
-                            var dp = $('#diskPath').val();
-                            var group_id = $('#group-id').val();
-                            var data = {path: dp, key: group_id};
-                            return data;
-                        },
-                        allowedFileExtensions: ["py", "json", "txt", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe"],
-                        language: "zh",
-                        maxNumberOfFiles: 2,
-                        maxFileSize: 100 * 1024,
-                        showUpload: true,
-                        maxFileCount: 10,
-                        showPreview: true,
-                        allowedPreviewTypes: ['image', 'video', 'audio'],
-                        success: function (fileInfo) {
-                            $('#upload-msg').html('操作状态：' + fileInfo.data);
-                        }
-                    });
-                    $('#upload-file').on('fileuploaded', function (event, data) {
-                        var response = data.response;
-                        //console.log(response);
-                        getSize();
-                        $('#upload-msg').html('操作状态：' + response.msg);
-
-                        getfiles($('#group-id').val())
-                    });
-                    $('.upload-btn').click(function () {
-                        var path = $('#diskPath').val();
-                        $('#upload-msg').html('提示 文件将上传至：' + path);
-                        $('#upload-modal').modal();
-                    });
-                    var na = $('#group-id').attr('data-toggle');
-                    $('#upload-msg').html('提示 文件将上传至群组：' + na);
-                    $('#upload-modal').modal()
-
-                }
-            });
-            getGroup();
-
-
-            $('#create').click(function () {
-                $('#group-name').val('');
-                $('#modal').modal()
-            });
-            $('#submit-create').click(function () {
-                $.ajax({
-                    url: '/disk/addGroup/',
-                    method: 'post',
-                    data: {name: $('#group-name').val()},
-                    success: function (resp) {
-                        if (resp.status == 'ok') {
-                            $('#modal').modal('hide');
-                            getGroup();
-                        } else {
-                            $('#modal-msg').html(resp.msg)
-                        }
+<script>
+    $(document).ready(function () {
+        $('#upload-btn').click(function () {
+            var check = $('#group-id').val();
+            if (check == 'none') {
+                $('#upload-msg').html('请进入群组详情后再上传文件');
+                $('#upload-modal').modal()
+            } else {
+                $('#up-body').html('<input type="file" class="file-loading" multiple id="upload-file"/>');
+                $('#upload-file').fileinput({
+                    uploadUrl: '/disk/upload/',
+                    uploadExtraData: function (previewId, index) {
+                        var dp = $('#diskPath').val();
+                        var group_id = $('#group-id').val();
+                        var data = {path: dp, key: group_id};
+                        return data;
                     },
-                    error: function () {
-                        alert('服务器错误')
+                    allowedFileExtensions: ["txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+                    theme: "explorer",
+                    language: "zh",
+                    maxNumberOfFiles: 2,
+                    maxFileSize: 100 * 1024,
+                    showUpload: true,
+                    maxFileCount: 10,
+                    showPreview: true,
+                    allowedPreviewTypes: ['image', 'video', 'audio'],
+                    success: function (fileInfo) {
+                        $('#upload-msg').html('操作状态：' + fileInfo.data);
                     }
                 });
-            });
+                $('#upload-file').on('fileuploaded', function (event, data) {
+                    var response = data.response;
+                    //console.log(response);
+                    getSize();
+                    $('#upload-msg').html('操作状态：' + response.msg);
 
-            $('.repeat-share').click(function () {
-                var check = document.getElementsByName('check-addr');
-                var ch = [];
-                var data = [];
-                $.each(check, function (i, item) {
-                    if (item.checked == true) {
-                        ch.push(i);
-                        data.push($('.check' + i).attr('data-toggle'));
-                    }
-
+                    getfiles($('#group-id').val())
                 });
-                //console.log(data);
-                if (ch.length > 0) {
-                    $('#share-modal').modal();
-                    $('#share-val').val(data);
-
-                } else {
-                    alert('请选择勾选需要操作项')
-                }
-            });
-
-            $('.repeat-del').click(function () {
-                var check = document.getElementsByName('check-addr');
-                var ch = [];
-                var data = [];
-                $.each(check, function (i, item) {
-                    if (item.checked == true) {
-                        ch.push(i);
-                        data.push($('.check' + i).attr('data-toggle'));
-                    }
-
-
+                $('.upload-btn').click(function () {
+                    var path = $('#diskPath').val();
+                    $('#upload-msg').html('提示 文件将上传至：' + path);
+                    $('#upload-modal').modal();
                 });
-                //console.log(data);
-                if (ch.length > 0) {
-                    $('#modal-input').html('');
-                    $('#modal-msg').html('确认删除选中的文件（目录）？');
-                    $('#modal-val').val(data);
-                    $('#modal-del').attr('style', 'display: block');
+                var na = $('#group-id').attr('data-toggle');
+                $('#upload-msg').html('提示 文件将上传至群组：' + na);
+                $('#upload-modal').modal()
 
-                    $('#modal').modal();
-                } else {
-                    $('#modal-input').html('');
-                    $('#modal-msg').html('请先选择文件(目录）！');
-                    $('#modal-del').attr('style', 'display: none');
-                    $('#modal').modal();
+            }
+        });
+        getGroup();
+
+
+        $('#create').click(function () {
+            $('#group-name').val('');
+            $('#modal').modal()
+        });
+        $('#submit-create').click(function () {
+            $.ajax({
+                url: '/disk/addGroup/',
+                method: 'post',
+                data: {name: $('#group-name').val()},
+                success: function (resp) {
+                    if (resp.status == 'ok') {
+                        $('#modal').modal('hide');
+                        getGroup();
+                    } else {
+                        $('#modal-msg').html(resp.msg)
+                    }
+                },
+                error: function () {
+                    alert('服务器错误')
                 }
             });
         });
-        function getGroup() {
-            $.ajax({
-                url: '/disk/group/',
-                method: 'post',
-                datatype: 'json',
-                success: function (resp) {
-                    if (resp.status == 'ok') {
-                        if (resp.folder.length > 0) {
-                            var fol = resp.folder;
-                            $('#diskList').html('');
-                            for (var i = 0; i < fol.length; i++) {
-                                var data = fol[i];
-                                $('#diskList').append('<tr><td><a style="cursor: pointer; color: #5bc0de;" data-toggle="' + data.id + '" class="ch-group">' + data.foldername + '</a></td><td><a style="cursor: pointer; color: #5bc0de;" data-toggle="' + data.id + '" class="del-group"><i class="fa fa-trash"></i></a></td><td>' + data.update_time + '</td></tr>');
-                            }
-                        } else {
-                            $('#diskList').html('还没有群组，可以点击创建~')
+
+        $('.repeat-share').click(function () {
+            var check = document.getElementsByName('check-addr');
+            var ch = [];
+            var data = [];
+            $.each(check, function (i, item) {
+                if (item.checked == true) {
+                    ch.push(i);
+                    data.push($('.check' + i).attr('data-toggle'));
+                }
+
+            });
+            //console.log(data);
+            if (ch.length > 0) {
+                $('#share-modal').modal();
+                $('#share-val').val(data);
+
+            } else {
+                alert('请选择勾选需要操作项')
+            }
+        });
+
+        $('.repeat-del').click(function () {
+            var check = document.getElementsByName('check-addr');
+            var ch = [];
+            var data = [];
+            $.each(check, function (i, item) {
+                if (item.checked == true) {
+                    ch.push(i);
+                    data.push($('.check' + i).attr('data-toggle'));
+                }
+
+
+            });
+            //console.log(data);
+            if (ch.length > 0) {
+                $('#modal-input').html('');
+                $('#modal-msg').html('确认删除选中的文件（目录）？');
+                $('#modal-val').val(data);
+                $('#modal-del').attr('style', 'display: block');
+
+                $('#modal').modal();
+            } else {
+                $('#modal-input').html('');
+                $('#modal-msg').html('请先选择文件(目录）！');
+                $('#modal-del').attr('style', 'display: none');
+                $('#modal').modal();
+            }
+        });
+    });
+    function getGroup() {
+        $.ajax({
+            url: '/disk/group/',
+            method: 'post',
+            datatype: 'json',
+            success: function (resp) {
+                if (resp.status == 'ok') {
+                    if (resp.folder.length > 0) {
+                        var fol = resp.folder;
+                        $('#diskList').html('');
+                        for (var i = 0; i < fol.length; i++) {
+                            var data = fol[i];
+                            $('#diskList').append('<tr><td><a style="cursor: pointer; color: #5bc0de;" data-toggle="' + data.id + '" class="ch-group">' + data.foldername + '</a></td><td><a style="cursor: pointer; color: #5bc0de;" data-toggle="' + data.id + '" class="del-group"><i class="fa fa-trash"></i></a></td><td>' + data.update_time + '</td></tr>');
                         }
-                        $('.ch-group').click(function () {
-                            var key = $(this).attr('data-toggle');
-                            getfiles(key);
+                    } else {
+                        $('#diskList').html('还没有群组，可以点击创建~')
+                    }
+                    $('.ch-group').click(function () {
+                        var key = $(this).attr('data-toggle');
+                        getfiles(key);
+
+                    });
+                    $('.del-group').click(function () {
+                        var key = $(this).attr('data-toggle');
+
+                        $.ajax({
+                            url: '/disk/delGroup/',
+                            method: 'post',
+                            data: {key: key},
+                            error: function () {
+                                alert('服务器错误')
+                            },
+                            success: function (resp) {
+                                if (resp.status == 'ok') {
+                                    getGroup()
+                                } else {
+                                    alert(resp.msg)
+                                }
+                            }
 
                         });
-                        $('.del-group').click(function () {
-                            var key = $(this).attr('data-toggle');
-
-                            $.ajax({
-                                url: '/disk/delGroup/',
-                                method: 'post',
-                                data: {key: key},
-                                error: function () {
-                                    alert('服务器错误')
-                                },
-                                success: function (resp) {
-                                    if (resp.status == 'ok') {
-                                        getGroup()
-                                    }else {
-                                        alert(resp.msg)
-                                    }
-                                }
-
-                            });
-                        })
-                    } else {
-                        $('#diskList').html(resp.msg)
-                    }
-
-                },
-                error: function () {
-                    $('#diskList').html('服务器错误')
+                    })
+                } else {
+                    $('#diskList').html(resp.msg)
                 }
-            })
-        }
-        //maxFileSize 文件大小单位k
-        function getfiles(key) {
-            $.ajax({
-                url: '/disk/json/path/',
-                method: 'post',
-                data: {key: key},
-                error: function () {
-                    alert('服务器错误')
-                },
-                success: function (resp) {
-                    if (resp.status == 'ok') {
+
+            },
+            error: function () {
+                $('#diskList').html('服务器错误')
+            }
+        })
+    }
+    //maxFileSize 文件大小单位k
+    function getfiles(key) {
+        $.ajax({
+            url: '/disk/json/path/',
+            method: 'post',
+            data: {key: key},
+            error: function () {
+                alert('服务器错误')
+            },
+            success: function (resp) {
+                if (resp.status == 'ok') {
+                    $('#diskList').html('');
+                    $('#group-id').val(resp.folder_id);
+                    $('#group-id').attr('data-toggle', resp.path);
+                    if (resp.file.length > 0) {
                         $('#diskList').html('');
-                        $('#group-id').val(resp.folder_id);
-                        $('#group-id').attr('data-toggle', resp.path);
-                        if (resp.file.length > 0) {
-                            $('#diskList').html('');
-                            for (var i = 0; i < resp.file.length; i++) {
-                                var da = resp.file[i];
-                                $('#diskList').append('<tr><td>' + da.showname + '</td><td>' + da.file_size + '</td><td><a data-toggle="' + da.id + '" class="del-file"><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp;<a data-toggle="' + da.id + '" class="download-file"><i class="fa fa-download"></i></a></td></tr>')
-                                $('.del-file').click(function () {
-                                    var key = $(this).attr('data-toggle');
-                                    //alert(key)
-                                    $.ajax({
-                                        url: '/disk/delGroup/?key=' + key,
-                                        success: function (resp) {
-                                            if (resp.status == 'ok') {
-                                                getfiles($('#group-id').val());
-                                            } else {
-                                                alert(resp.msg)
-                                            }
+                        for (var i = 0; i < resp.file.length; i++) {
+                            var da = resp.file[i];
+                            $('#diskList').append('<tr><td>' + da.showname + '</td><td>' + da.file_size + '</td><td><a data-toggle="' + da.id + '" class="del-file"><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp;<a data-toggle="' + da.id + '" class="download-file"><i class="fa fa-download"></i></a></td></tr>')
+                            $('.del-file').click(function () {
+                                var key = $(this).attr('data-toggle');
+                                //alert(key)
+                                $.ajax({
+                                    url: '/disk/delGroup/?key=' + key,
+                                    success: function (resp) {
+                                        if (resp.status == 'ok') {
+                                            getfiles($('#group-id').val());
+                                        } else {
+                                            alert(resp.msg)
                                         }
-                                    });
+                                    }
                                 });
-                                $('.download-file').click(function () {
-                                    var key = $(this).attr('data-toggle');
-                                    //alert(key)
-                                    $(document.body).append('<iframe id="downloads" src="/disk/groupDownload/?key=' + key + '" frameborder="0"></iframe>');
-                                    $('#downloads').submit();
-                                });
-                            }
-                        } else {
-
-                            $('#diskList').html('还没有文件，点击上传~')
+                            });
+                            $('.download-file').click(function () {
+                                var key = $(this).attr('data-toggle');
+                                //alert(key)
+                                $(document.body).append('<iframe id="downloads" src="/disk/groupDownload/?key=' + key + '" frameborder="0"></iframe>');
+                                $('#downloads').submit();
+                            });
                         }
+                    } else {
+
+                        $('#diskList').html('还没有文件，点击上传~')
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
-    </script>
+</script>
 
 {% endblock %}

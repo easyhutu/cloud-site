@@ -38,7 +38,8 @@ $(document).ready(function () {
             var data = {path: $('#diskPath').val()};
             return data;
         },
-        allowedFileExtensions: ["rar","py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+        allowedFileExtensions: ["txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+        theme: "explorer",
         language: "zh",
         maxNumberOfFiles: 2,
         maxFileSize: 100 * 1024,
@@ -46,6 +47,8 @@ $(document).ready(function () {
         maxFileCount: 10,
         showPreview: true,
         allowedPreviewTypes: ['image', 'video', 'audio'],
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         success: function (fileInfo) {
             $('#upload-msg').html('操作状态：' + fileInfo.data);
         }
@@ -185,14 +188,14 @@ function requestData(pa) {
                     for (var i = 0; i < folders.length; i++) {
                         var data = resp.folders[i];
 
-                        $('#diskList').append('<tr class="folder-ch" ><th><input name="check-addr" value=folder."' + data.id + '"  type="checkbox"><input class="check'+i+'" data-toggle="folder.' + data.id + '" type="hidden" id="folder-key' + data.id + '" value="' + data.foldername + '"><a class="folder-ch" style="cursor: pointer; color: #5bc0de;" onclick="getList(' + data.id + ')">&nbsp;&nbsp;<i class="iconfont icon-wenjianjia1"></i>' + data.foldername + '</a></th><th class=""><i title="下载" style="color: #5bc0de; " data-toggle="folder.' + data.id + '" class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-template="' + data.foldername + '" data-toggle="folder.' + data.id + '" class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="folder.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>-</th><th class="hidden-xs hidden-sm"> ' + data.update_time + '</th></tr>');
+                        $('#diskList').append('<tr class="folder-ch" ><th><input name="check-addr" value=folder."' + data.id + '"  type="checkbox"><input class="check' + i + '" data-toggle="folder.' + data.id + '" type="hidden" id="folder-key' + data.id + '" value="' + data.foldername + '"><a class="folder-ch" style="cursor: pointer; color: #5bc0de;" onclick="getList(' + data.id + ')">&nbsp;&nbsp;<i class="iconfont icon-wenjianjia1"></i>' + data.foldername + '</a></th><th class=""><i title="下载" style="color: #5bc0de; " data-toggle="folder.' + data.id + '" class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-template="' + data.foldername + '" data-toggle="folder.' + data.id + '" class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="folder.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>-</th><th class="hidden-xs hidden-sm"> ' + data.update_time + '</th></tr>');
                     }
                 }
                 if (files.length > 0) {
                     for (var i = 0; i < files.length; i++) {
                         var data = resp.file[i];
-                        var flen = folders.length+i;
-                        $('#diskList').append('<tr><th><input name="check-addr" value="file.' + data.id + '" type="checkbox"><input class="check'+flen+'" data-toggle="file.' + data.id + '" type="hidden" id="file-key' + data.id + '" value="' + data.id + '"><span style="cursor: pointer">&nbsp;&nbsp;<i class="iconfont icon-wenjian"></i>' + data.showname + '</span></th><th class=""><i title="下载" data-toggle="file.' + data.id + '" style="color: #5bc0de; display: " class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="file.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>' + data.file_size + '</th><th class="hidden-xs hidden-sm">' + data.update_time + '</th></tr>');
+                        var flen = folders.length + i;
+                        $('#diskList').append('<tr><th><input name="check-addr" value="file.' + data.id + '" type="checkbox"><input class="check' + flen + '" data-toggle="file.' + data.id + '" type="hidden" id="file-key' + data.id + '" value="' + data.id + '"><span style="cursor: pointer">&nbsp;&nbsp;<i class="iconfont icon-wenjian"></i>' + data.showname + '</span></th><th class=""><i title="下载" data-toggle="file.' + data.id + '" style="color: #5bc0de; display: " class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="file.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>' + data.file_size + '</th><th class="hidden-xs hidden-sm">' + data.update_time + '</th></tr>');
                     }
                 }
                 $('.download-ch').click(function () {
