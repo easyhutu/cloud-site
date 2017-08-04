@@ -38,7 +38,7 @@ $(document).ready(function () {
             var data = {path: $('#diskPath').val()};
             return data;
         },
-        allowedFileExtensions: ["rar","py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe"],
+        allowedFileExtensions: ["rar","py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
         language: "zh",
         maxNumberOfFiles: 2,
         maxFileSize: 100 * 1024,
