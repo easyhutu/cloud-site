@@ -118,6 +118,7 @@ class CheckUser(MethodView):
         return jsonify(check is None)
 
 
+# 用户信息
 class UsersInfo(MethodView):
     def get(self):
         check_user = check_login()
@@ -133,10 +134,11 @@ class UsersInfo(MethodView):
                 'email': username.email, 'auth': username.authority}
         if username.authority == 0:
             ctrls = [['修改密码', 'change-pwd'], ['修改密保', 'change-fgpwd'], ['管理用户', 'mg-user'], ['反馈查看', 'msg-show'],
-                     ['发公告', 'create-msg'], ['发邮件', 'send-email'], ['生成邀请码', 'create-key'], ['清除分享链', 'clear-share']]
+                     ['发公告', 'create-msg'], ['发群公告', 'create-group-msg'], ['发邮件', 'send-email'],
+                     ['生成邀请码', 'create-key'], ['清除分享链', 'clear-share']]
         elif username.authority == 1:
             ctrls = [['修改密码', 'change-pwd'], ['修改密保', 'change-fgpwd'], ['管理组员', 'mg-user'], ['生成邀请码', 'create-key'],
-                     ['反馈', 'msg-send'], ['清除分享链', 'clear-share']]
+                     ['反馈', 'msg-send'], ['发群公告', 'create-group-msg'], ['清除分享链', 'clear-share']]
         elif username.authority == 2:
             ctrls = [['修改密码', 'change-pwd'], ['修改密保', 'change-fgpwd'], ['反馈', 'msg-send'], ['清除分享链', 'clear-share']]
         else:
@@ -144,6 +146,7 @@ class UsersInfo(MethodView):
         return render_template('admin/userinfo.html', uu=user, ctrls=ctrls)
 
 
+# 修改用户信息
 class ChangeInfo(MethodView):
     def post(self):
         check_user = check_login()
@@ -288,7 +291,8 @@ class UserList(MethodView):
             nums = (page - 1 if page >= 0 else 0) * 10
             group = request.form.get('group')
             if group == 'group':
-                allus = db.session.query(Users).filter(Users.user_group_id == user_id).order_by(Users.id.desc())[nums: nums + 10]
+                allus = db.session.query(Users).filter(Users.user_group_id == user_id).order_by(Users.id.desc())[
+                        nums: nums + 10]
                 counts = db.session.query(Users).filter(Users.user_group_id == user_id).count()
                 all_page = int(counts / 10) + (1 if counts % 10 != 0 else 0)
             else:
@@ -493,6 +497,8 @@ class Messages(MethodView):
             return render_template('admin/message.html', fb='@反馈意见')
         elif key == 'allUser':
             return render_template('admin/message.html', fb=f'@全体成员')
+        elif key == 'groupUser':
+            return render_template('admin/message.html', fb=f'@群组成员')
         elif key:
             return render_template('admin/message.html', fb=f'@{key}')
         else:
@@ -527,6 +533,9 @@ class Messages(MethodView):
                     return jsonify({'status': 'ok', 'msg': 'ok'})
                 elif author == '@全体成员':
                     threading.Thread(target=send_all, args=(user_id, sender, title, body)).start()
+                    return jsonify({'status': 'ok', 'msg': 'ok'})
+                elif author == '@群组成员':
+                    threading.Thread(target=send_all, args=(user_id, sender, title, body, True)).start()
                     return jsonify({'status': 'ok', 'msg': 'ok'})
                 else:
                     user = db.session.query(Users).filter(Users.name == author.replace('@', '')).one_or_none()
@@ -604,14 +613,25 @@ class ChangeMessage(MethodView):
         return jsonify({'status': 'ok', 'msg': 'ok'})
 
 
-def send_all(user_id, sender, title, body):
+def send_all(user_id, sender, title, body, is_group=False):
     from run import app
     with app.app_context():
-        users = db.session.query(Users).all()
-        for user in users:
-            me = Message(user_id=user_id, user_name=sender.name, user_showname=sender.show_name,
-                         to_id=user.id, to_name=user.name, to_showname=user.show_name, title=title,
-                         body=body, is_show=0,
-                         create_time=datetime.now(), group_id=0)
-            db.session.add(me)
-            db.session.commit()
+
+        if is_group:
+            users = db.session.query(Users).filter(Users.user_group_id == user_id).all()
+            for user in users:
+                me = Message(user_id=user_id, user_name=sender.name, user_showname=sender.show_name,
+                             to_id=user.id, to_name=user.name, to_showname=user.show_name, title=title,
+                             body=body, is_show=0,
+                             create_time=datetime.now(), group_id=0)
+                db.session.add(me)
+                db.session.commit()
+        else:
+            users = db.session.query(Users).all()
+            for user in users:
+                me = Message(user_id=user_id, user_name=sender.name, user_showname=sender.show_name,
+                             to_id=user.id, to_name=user.name, to_showname=user.show_name, title=title,
+                             body=body, is_show=0,
+                             create_time=datetime.now(), group_id=0)
+                db.session.add(me)
+                db.session.commit()
