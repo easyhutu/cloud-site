@@ -8,7 +8,7 @@ app.debug = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./db/cloud.db'
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = 'saf678sf97as6#^**$#al$&*(fsf670*^&^&%&$254'
+app.secret_key = 'saf678sf97as6#^**$#af670*^&^&%&$254'
 app.wsgi_app = ProxyFix(app.wsgi_app)
 db = SQLAlchemy(app)
 
