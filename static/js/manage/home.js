@@ -38,13 +38,14 @@ $(document).ready(function () {
             var data = {path: $('#diskPath').val()};
             return data;
         },
-        allowedFileExtensions: ["rar","py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+        allowedFileExtensions: ["txt","rar","py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
         language: "zh",
         maxNumberOfFiles: 2,
         maxFileSize: 100 * 1024,
         showUpload: true,
         maxFileCount: 10,
-        showPreview: false,
+        showPreview: true,
+        allowedPreviewTypes: ["image", "video"],
         success: function (fileInfo) {
             $('#upload-msg').html('操作状态：' + fileInfo.data);
         }
