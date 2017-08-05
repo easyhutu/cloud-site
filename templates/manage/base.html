@@ -108,6 +108,7 @@
 <script src="/bootstrap-fileinput/themes/explorer/theme.js"></script>
 
 <script src="/js/manage/index.js"></script>
+<script src="/js/manage/clipboard.min.js"></script>
 
 {% block script %}
 
@@ -115,6 +116,7 @@
 <script>
     $(document).ready(function () {
         getmsgcount();
+        new Clipboard('.btn');
     });
     function getmsgcount() {
          $('#msg-info').html('');

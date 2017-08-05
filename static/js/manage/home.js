@@ -233,9 +233,28 @@ function requestData(pa) {
                 });
                 $('.share-ch').click(function () {
                     var data = $(this).attr('data-toggle');
+                    $.ajax({
+                        url: '/disk/createShareUrl/?key=' + data,
+                        method: 'get',
+                        datatype: 'json',
+                        error: function () {
+
+                        },
+                        success: function (resp) {
+                            if (resp.status == 'ok') {
+                                $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;<input type="text" id="shareUrl" value="http://yuncluod.com:8000/disk/share/' + resp.msg + '/" > <button class="btn btn-xs bg-success" data-clipboard-target="#shareUrl"><i class="fa fa-copy"></i></button>');
+                                $('#share-submit').attr('disabled', 'disabled');
+
+                            } else {
+                                $('#share-msg').html('<h4>点击确定即可创建分享链接</h4>');
+                                $('#share-val').val(data);
+                                $('#share-submit').removeAttr('disabled');
+                            }
+
+                        }
+                    });
                     $('#share-msg').html('');
                     $('#share-modal').modal();
-                    $('#share-val').val(data);
                 });
 
 

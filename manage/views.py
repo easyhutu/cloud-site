@@ -519,6 +519,65 @@ class DeleteFile(MethodView):
 
 # 生成分享链接
 class CreateShareUlr(MethodView):
+    def get(self):
+        check_user = check_login()
+        if check_user is None:
+            return jsonify({'status': 'error', 'msg': 'no authority'})
+        if check_user == -1:
+            return jsonify({'status': 'error', 'msg': 'user is valid'})
+        file = request.args.get('key')
+        user_id = session.get('user_id')
+        if ',' in file:
+            da = file.split(',')
+            folder_list = []
+            file_list = []
+
+            for file in da:
+                key = file.split('.')[-1]
+                if 'folder' in file:
+                    folder_list.append(key)
+
+                elif 'file' in file:
+                    file_list.append(key)
+
+                else:
+                    return jsonify({'status': 'error', 'msg': 'ERROR'})
+
+            fo = ','.join(folder_list)
+            fi = ','.join(file_list)
+            share = db.session.query(ShareGroups).filter(ShareGroups.folders == fo,
+                                                         ShareGroups.files == fi,
+                                                         ShareGroups.user_id == user_id).one_or_none()
+            if share:
+                return jsonify({'status': 'ok', 'msg': share.share_key})
+            else:
+                return jsonify({'status': 'error', 'msg': ''})
+        else:
+
+            if 'file' in file:
+
+                file_id = file.split('.')[-1]
+                share = db.session.query(ShareGroups).filter(ShareGroups.folders == 0,
+                                                             ShareGroups.files == file_id,
+                                                             ShareGroups.user_id == user_id).one_or_none()
+                if share:
+                    return jsonify({'status': 'ok', 'msg': share.share_key})
+                else:
+                    return jsonify({'status': 'error', 'msg': ''})
+
+            elif 'folder' in file:
+                folder_id = file.split('.')[-1]
+
+                share = db.session.query(ShareGroups).filter(ShareGroups.folders == folder_id,
+                                                             ShareGroups.files == 0,
+                                                             ShareGroups.user_id == user_id).one_or_none()
+                if share:
+                    return jsonify({'status': 'ok', 'msg': share.share_key})
+                else:
+                    return jsonify({'status': 'error', 'msg': ''})
+            else:
+                return jsonify({'status': 'error', 'msg': ''})
+
     def post(self):
         check_user = check_login()
         if check_user is None:
@@ -606,10 +665,12 @@ class Share(MethodView):
                 for fo in folder.split(','):
                     foname = db.session.query(DiskFolder).filter(DiskFolder.id == fo,
                                                                  DiskFolder.is_trash == 0).one_or_none()
-                    foldernames.append(foname)
+                    if foname:
+                        foldernames.append(foname)
                 for fi in file.split(','):
                     finame = db.session.query(DiskFile).filter(DiskFile.id == fi, DiskFile.is_trash == 0).one_or_none()
-                    filenames.append(finame)
+                    if finame:
+                        filenames.append(finame)
                 return render_template('manage/share.html', key=key, share_file=share_file, name=name,
                                        filenames=filenames,
                                        foldernames=foldernames)
