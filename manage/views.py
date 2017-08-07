@@ -13,6 +13,7 @@ import admin.models
 from sqlalchemy import and_
 import zipfile, time
 from helper.creat_hash import creat_hash
+from helper.to_html import create_html
 import urllib.parse
 
 """
@@ -28,6 +29,8 @@ import urllib.parse
     文件夹，只会恢复该文件夹，不会恢复所属文件夹和文件。
 
 """
+POWER_FILES = ['.py', '.txt', '.txt', '.json']
+MAX_SIZE = 5 * 1024 * 1024
 
 
 class IndexPage(MethodView):
@@ -109,6 +112,43 @@ class GetFiles(MethodView):
 
                 return jsonify({'status': 'ok', 'path': folder.folder_name, 'file': files,
                                 'folder_id': folder_id})
+
+
+class FileDetail(MethodView):
+    def post(self):
+        check_user = check_login()
+        if check_user is None:
+            return jsonify({'status': 'error', 'msg': 'no authority'})
+        if check_user == -1:
+            return jsonify({'status': 'error', 'msg': 'user is valid'})
+        else:
+            user_id = session.get('user_id')
+            file_id = request.form.get('file_id')
+            file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == file_id).one_or_none()
+
+            if file:
+                if file.file_size < MAX_SIZE:
+                    if os.path.splitext(file.file_name)[-1] in POWER_FILES:
+                        user = admin.models.db.session.query(admin.models.Users).filter(
+                            admin.models.Users.id == user_id).one_or_none()
+                        path = 'static/disk/' + user.real_folder + '/' + file.file_name
+                        try:
+                            with open(path, encoding='utf8') as f:
+                                data = f.read()
+                            now_path = file.file_path + '/' + file.show_name
+                            da = create_html(data, os.path.splitext(file.file_name)[-1])
+                            return jsonify(
+                                {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:]})
+                        except:
+                            return jsonify(
+                                {'status': 'error', 'msg': 'No such file or directory'})
+                    else:
+                        return jsonify(
+                            {'status': 'error', 'msg': 'file type can not power'})
+                else:
+                    return jsonify({'status': 'error', 'msg': 'file size math max'})
+            else:
+                return jsonify({'status': 'error', 'msg': 'not find file'})
 
 
 class GetUseSize(MethodView):

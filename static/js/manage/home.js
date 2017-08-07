@@ -168,22 +168,9 @@ function requestData(pa) {
         success: function (resp) {
             if (resp.status == 'ok') {
                 $('#diskList').html('');
-                $('#path').html('');
-                $('#path').append('<li></li>');
-                $('#diskPath').val(resp.now_path);
-                var path = resp.path;
                 var folders = resp.folders;
                 var files = resp.file;
-                for (var i = 0; i < path.length; i++) {
-                    var fo = resp.path[i];
-                    var this_path = '';
-                    for (var n = 0; n <= i; n++) {
-                        this_path = this_path + '/' + resp.path[n];
-                    }
-                    //console.log(this_path);
-                    $('#path').append('<li><a style="cursor: pointer" onclick="navGetList(' + i + ')">' + fo + '<input type="hidden" id="this' + i + '" value="' + this_path + '"></li>');
-                }
-
+                createNva(resp);
                 if (folders.length > 0) {
                     for (var i = 0; i < folders.length; i++) {
                         var data = resp.folders[i];
@@ -195,7 +182,7 @@ function requestData(pa) {
                     for (var i = 0; i < files.length; i++) {
                         var data = resp.file[i];
                         var flen = folders.length + i;
-                        $('#diskList').append('<tr><th><input name="check-addr" value="file.' + data.id + '" type="checkbox"><input class="check' + flen + '" data-toggle="file.' + data.id + '" type="hidden" id="file-key' + data.id + '" value="' + data.id + '"><span style="cursor: pointer">&nbsp;&nbsp;<i class="iconfont icon-wenjian"></i>' + data.showname + '</span></th><th class=""><i title="下载" data-toggle="file.' + data.id + '" style="color: #5bc0de; display: " class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="file.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>' + data.file_size + '</th><th class="hidden-xs hidden-sm">' + data.update_time + '</th></tr>');
+                        $('#diskList').append('<tr><th><input name="check-addr" value="file.' + data.id + '" type="checkbox"><input class="check' + flen + '" data-toggle="file.' + data.id + '" type="hidden" id="file-key' + data.id + '" value="' + data.id + '"><span onclick="getDetail(' + data.id + ')" style="cursor: pointer">&nbsp;&nbsp;<i class="iconfont icon-wenjian"></i>' + data.showname + '</span></th><th class=""><i title="下载" data-toggle="file.' + data.id + '" style="color: #5bc0de; display: " class="download-ch iconfont icon-xiazai"></i>&nbsp;<i title="删除" style="color: #5bc0de;" data-toggle="file.' + data.id + '" data-template="' + data.showname + '"  class="del-ch iconfont icon-shanchu"></i>&nbsp;<i title="分享" style="color: #5bc0de;" data-toggle="file.' + data.id + '" class="share-ch iconfont icon-fenxiang1"></i>' + data.file_size + '</th><th class="hidden-xs hidden-sm">' + data.update_time + '</th></tr>');
                     }
                 }
                 $('.download-ch').click(function () {
@@ -260,6 +247,47 @@ function requestData(pa) {
 
             } else {
                 $('#diskList').html(resp.msg);
+            }
+        }
+    });
+}
+function createNva(resp) {
+    $('#path').html('');
+    $('#path').append('<li></li>');
+    $('#diskPath').val(resp.now_path);
+    var path = resp.path;
+    for (var i = 0; i < path.length; i++) {
+        var fo = resp.path[i];
+        var this_path = '';
+        for (var n = 0; n <= i; n++) {
+            this_path = this_path + '/' + resp.path[n];
+        }
+        //console.log(this_path);
+        if (i == path.length - 1) {
+            $('#path').append('<li><a disabled="disabled" >' + fo + '<input type="hidden" id="this' + i + '" value="' + this_path + '"></li>');
+
+        } else {
+            $('#path').append('<li><a style="cursor: pointer" onclick="navGetList(' + i + ')">' + fo + '<input type="hidden" id="this' + i + '" value="' + this_path + '"></li>');
+
+        }
+    }
+}
+function getDetail(id) {
+    $.ajax({
+        url: '/disk/json/detail/',
+        method: 'post',
+        data: {file_id: id},
+        error: function () {
+            console.log('服务器错误')
+        },
+        success: function (resp) {
+            if (resp.status == 'ok') {
+                console.log(resp.data);
+                createNva(resp);
+                var data = resp.data;
+                $('#diskList').html(data)
+            } else {
+                console.log(resp.msg);
             }
         }
     });
