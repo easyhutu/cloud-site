@@ -5,43 +5,43 @@
 
 
 {% block content %}
-    <div id="listHeight">
-        <div class="content-title">
-            <input type="hidden" id="is-fb" value="{{ fb }}">
-            <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
-                <ul id="myTabs" class="nav nav-tabs" role="tablist">
-                    <li id="receive" role="presentation" class="active"><a href="#home" id="home-tab" role="tab"
-                                                                           data-toggle="tab"
-                                                                           aria-controls="home"
-                                                                           aria-expanded="true">收件</a></li>
-                    <li id="sends" role="presentation" class=""><a href="#profile" role="tab" id="profile-tab"
-                                                                   data-toggle="tab"
-                                                                   aria-controls="profile" aria-expanded="false">发件</a>
-                    </li>
-                </ul>
-                <div id="myTabContent" class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
-                        <div id="msg-list" class="list-group">
-                            <div class="input-group input-group-sm">
-                                <input id="1" type="text" readonly class="form-control msg-title" placeholder="标题名称"
-                                       aria-describedby="sizing-addon3">
-                                <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
-                            </div>
-                            <span id="body-1" style="display: none;" class="list-group-item msg-body">Dapibus ac facilisis in</span>
+<div id="listHeight">
+    <div class="content-title">
+        <input type="hidden" id="is-fb" value="{{ fb }}">
+        <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                <li id="receive" role="presentation" class="active"><a href="#home" id="home-tab" role="tab"
+                                                                       data-toggle="tab"
+                                                                       aria-controls="home"
+                                                                       aria-expanded="true">收件</a></li>
+                <li id="sends" role="presentation" class=""><a href="#profile" role="tab" id="profile-tab"
+                                                               data-toggle="tab"
+                                                               aria-controls="profile" aria-expanded="false">发件</a>
+                </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+                    <div id="msg-list" class="list-group">
+                        <div class="input-group input-group-sm">
+                            <input id="1" type="text" readonly class="form-control msg-title" placeholder="标题名称"
+                                   aria-describedby="sizing-addon3">
+                            <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
+                        </div>
+                        <span id="body-1" style="display: none;" class="list-group-item msg-body">Dapibus ac facilisis in</span>
 
-                            <div class="input-group input-group-sm">
-                                <input type="text" readonly class="form-control" placeholder="标题名称"
-                                       aria-describedby="sizing-addon3">
-                                <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
-                            </div>
-                            <span class="list-group-item">Dapibus ac facilisis in</span>
-                            <div class="input-group input-group-sm">
-                                <input type="text" readonly class="form-control" placeholder="标题名称"
-                                       aria-describedby="sizing-addon3">
-                                <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
-                            </div>
-                            <span class="list-group-item">Dapibus ac facilisis in</span>
-                            <span class="list-group-item">
+                        <div class="input-group input-group-sm">
+                            <input type="text" readonly class="form-control" placeholder="标题名称"
+                                   aria-describedby="sizing-addon3">
+                            <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
+                        </div>
+                        <span class="list-group-item">Dapibus ac facilisis in</span>
+                        <div class="input-group input-group-sm">
+                            <input type="text" readonly class="form-control" placeholder="标题名称"
+                                   aria-describedby="sizing-addon3">
+                            <span class="input-group-addon btn btn-warning" id="sizing-addon3">删除</span>
+                        </div>
+                        <span class="list-group-item">Dapibus ac facilisis in</span>
+                        <span class="list-group-item">
                                  <div class="dataTables_paginate paging_simple_numbers"
                                       id="DataTables_Table_0_paginate">
                                     <ul class="pagination" id="page-list">
@@ -60,271 +60,292 @@
                                 </ul>
                                  </div>
                             </span>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon" id="sizing-addon3">收件人</span>
-                            <input id="msg-recer" type="text" class="form-control" placeholder="收件人名称-登录名"
-                                   aria-describedby="sizing-addon3">
-                        </div>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon" id="sizing-addon3">标题</span>
-                            <input id="msg-title" type="text" class="form-control" placeholder="标题最长20"
-                                   aria-describedby="sizing-addon3">
-                        </div>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon" id="sizing-addon3">正文</span>
-                            <textarea class="form-control" placeholder="正文最长300"
-                                      aria-describedby="sizing-addon3" style="height: auto" id="msg-body" cols="30"
-                                      rows="10"></textarea>
-                        </div>
-                        <button class="btn btn-info" id="sub-msg">提交</button>
                     </div>
                 </div>
+                <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+                    <div class="input-group input-group-sm col-lg-6">
+                        <span class="input-group-addon" id="sizing-addon3">收件人</span>
+                        <input id="msg-recer" type="text" class="form-control " placeholder="收件人名称-登录名"
+                               aria-describedby="sizing-addon3">
+                    </div>
+                    <div class="input-group input-group-sm col-lg-6">
+                        <span class="input-group-addon" id="sizing-addon3">标题</span>
+                        <input id="msg-title" type="text" class="form-control " placeholder="标题最长20"
+                               aria-describedby="sizing-addon3">
+                    </div>
+                    <div class="input-group input-group-sm">
+
+                            <textarea class="form-control" placeholder="正文最长300"
+                                      aria-describedby="sizing-addon3" style="height: auto" id="msg-body"></textarea>
+                    </div>
+                    <button class="btn btn-info" id="sub-msg">提交</button>
+                </div>
             </div>
-
-
         </div>
-        <!--列表-->
 
 
     </div>
+    <!--列表-->
 
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提示</h4>
-                </div>
-                <div class="modal-body">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+</div>
 
-                            反馈状态
-                        </div>
-                        <div class="panel-body" id="modal-input">
-                            &nbsp;<span class="pull-left"></span><span style="color: #1c94c4" id="modal-msg"></span>
-                            <div class="col-lg-11"></div>
-                        </div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        反馈状态
+                    </div>
+                    <div class="panel-body" id="modal-input">
+                        &nbsp;<span class="pull-left"></span><span style="color: #1c94c4" id="modal-msg"></span>
+                        <div class="col-lg-11"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="success-send" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-                    <button id="failed-send" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-                    </button>
-                    <input type="hidden" id="modal-val">
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    <iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button id="success-send" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <button id="failed-send" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                </button>
+                <input type="hidden" id="modal-val">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<iframe src="" id="iframes" style='display:none' height="0" width="0" frameborder="0"></iframe>
 {% endblock %}
 <input type="text">
 {% block script %}
 
-    <script>
-        $(document).ready(function () {
-            getMessageList(1);
+<script>
+    $(document).ready(function () {
+        getMessageList(1);
 
-            var chda = $('#is-fb').val();
-            if (chda.length > 0) {
-                $('#receive').attr('class', '');
-                $('#sends').attr('class', 'active');
-                if(chda != '@sendMessage'){
-                    $('#msg-recer').val(chda);
-                }
-                $('#profile-tab').attr('aria-expanded', 'true');
-                $('#profile').attr('class', 'tab-pane fade active in');
-                $('#home').attr('class', 'tab-pane fade');
-            }
+        // 初始化编辑器
+        $('#msg-body').trumbowyg({
+            //设置中文
+            lang: 'zh_cn',
+            // closable: true,
+            fixedBtnPane: true,
+            btns: [
+                ['viewHTML'],
+                ['formatting'],
+                'btnGrp-semantic',
+                ['superscript', 'subscript'],
+                ['link'],
+                ['insertImage'],
+                'btnGrp-justify',
+                'btnGrp-lists',
+                ['horizontalRule'],
+                ['removeformat'],
+                ['fullscreen']
+            ]
 
-            $('#success-send').click(function () {
-                window.location.href = '/admin/message/';
-            });
-
-            $('#sub-msg').click(function () {
-                var author = $('#msg-recer').val();
-                var title = $('#msg-title').val();
-                var body = $('#msg-body').val();
-                $.ajax({
-                    url: '/admin/message/',
-                    method: 'post',
-                    data: {author: author, title: title, body: body},
-                    error: function () {
-                        alert('服务器错误')
-                    },
-                    success: function (resp) {
-                        if (resp.status == 'ok') {
-                            $('#success-send').attr('style', 'display: block;');
-                            $('#failed-send').attr('style', 'display: none;');
-                            $('#modal-msg').html('消息发送成功');
-                            $('#modal').modal();
-                        } else {
-                            $('#success-send').attr('style', 'display: none;');
-                            $('#failed-send').attr('style', 'display: block;');
-                            $('#modal-msg').html(resp.msg);
-                            $('#modal').modal();
-                        }
-                    }
-                });
-            });
         });
 
+        var chda = $('#is-fb').val();
+        if (chda.length > 0) {
+            $('#receive').attr('class', '');
+            $('#sends').attr('class', 'active');
+            if (chda != '@sendMessage') {
+                $('#msg-recer').val(chda);
+            }
+            $('#profile-tab').attr('aria-expanded', 'true');
+            $('#profile').attr('class', 'tab-pane fade active in');
+            $('#home').attr('class', 'tab-pane fade');
+        }
 
-        function getMessageList(page) {
-            console.log(page);
+        $('#success-send').click(function () {
+            window.location.href = '/admin/message/';
+        });
+
+        $('#sub-msg').click(function () {
+            var author = $('#msg-recer').val();
+            var title = $('#msg-title').val();
+            var body = $('#msg-body').val();
             $.ajax({
-                url: '/admin/getMessage/',
-                method: 'POST',
-                data: {page: page},
+                url: '/admin/message/',
+                method: 'post',
+                data: {author: author, title: title, body: body},
+                error: function () {
+                    alert('服务器错误')
+                },
                 success: function (resp) {
-                    //console.log(resp);
-                    $('#msg-list').html('');
                     if (resp.status == 'ok') {
-                        var data = resp.data;
-
-
-                        for (var i = 0; i < data.length; i++) {
-                            var da = data[i];
-                            $('#msg-list').append('<div class="input-group input-group-sm"><input id="' + i + '" type="text" readonly class="form-control msg-title" value="' + da.title + '  来自：' + da.user_name + '       time：' + da.time + '" aria-describedby="sizing-addon3"><span style="font-size: x-small" class="sender-msg input-group-addon btn btn-warning" data-toggle="'+da.user_name+'" >回复</span><span style="font-size: x-small" class="read-msg input-group-addon btn btn-warning" data-toggle="'+da.id+'" id="read-' + da.id + '">标记为已读</span><span class="del-msg input-group-addon btn btn-warning" id="' + da.id + '">删除</span></div><span id="body-' + i + '" style="display: none;" class="list-group-item msg-body">' + da.body + '</br>    ---' + da.user_showname + '</span>');
-                            if(da.is_show == 1){
-                                $('#read-'+da.id).attr('disabled', 'disabled');
-                                $('#read-'+da.id).html('已读');
-
-                            }
-                        }
-                        $('#msg-list').append('<span class="list-group-item"><ul class="pagination" id="page-list"></ul></span>');
-                        if (resp.all <= 3) {
-                            var pa_list = [];
-                            for (var i = 1; i <= resp.all; i++) {
-                                pa_list.push(i);
-                            }
-                        } else {
-                            if (resp.now == 1) {
-                                var pa_list = [1, 2, 3, '...', resp.all]
-                            } else {
-                                if (resp.now + 1 == resp.all) {
-                                    var now_page = resp.now;
-                                    var pa_list = [now_page - 2, now_page - 1, now_page, '...', resp.all]
-                                } else {
-                                    if (resp.now == resp.all) {
-                                        var now_page = resp.now;
-                                        var pa_list = [1, '...', resp.all - 2, resp.all - 1, resp.all]
-                                    } else {
-                                        var now_page = resp.now;
-                                        var pa_list = [now_page - 1, now_page, now_page + 1, '...', resp.all]
-                                    }
-
-                                }
-                            }
-                        }
-                        $('#page-list').html('');
-                        if (resp.now == 1) {
-                            $('#page-list').append('<li style="pointer-events: none;"><a id="last-page" href="#"><</a></li>');
-                        } else {
-                            $('#page-list').append('<li><a id="last-page" href="#"><</a></li>');
-                        }
-                        for (var i = 0; i < pa_list.length; i++) {
-                            if (pa_list[i] == '...') {
-                                $('#page-list').append('<li style="pointer-events: none;"><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
-                            } else {
-
-
-                                if (pa_list[i] == resp.now) {
-                                    $('#page-list').append('<li class="active"><a id="now-page" href="#">' + pa_list[i] + '</a></li>');
-                                } else {
-                                    $('#page-list').append('<li><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
-                                }
-                            }
-                        }
-                        if (resp.now == resp.all) {
-                            $('#page-list').append('<li style="pointer-events: none;"><a id="next-page" href="#">></a></li>');
-                        } else {
-                            $('#page-list').append('<li><a id="next-page" href="#">></a></li>');
-                        }
-
-
-                        $(document).ready(function () {
-                            $('#last-page').click(function () {
-                                var pg = parseInt($('#now-page').html()) - 1;
-                                getMessageList(pg);
-                            });
-                            $('#next-page').click(function () {
-                                var pg = parseInt($('#now-page').html()) + 1;
-                                getMessageList(pg);
-                            });
-                            $('.page-ch').click(function () {
-                                var pg = parseInt($(this).html());
-                                getMessageList(pg);
-                            });
-                        });
-
-                        $('.msg-title').click(function () {
-                            key = $(this).attr('id');
-                            console.log(key);
-                            $('#body-' + key).toggle(100);
-                        });
-
-                        $(document).ready(function () {
-                            $('.del-msg').click(function () {
-                                var key = $(this).attr('id');
-                                $.ajax({
-                                    url: '/admin/changeMessage/',
-                                    method: 'post',
-                                    data: {key: key},
-                                    error: function () {
-                                        alert('服务器错误')
-                                    },
-                                    success: function (resp) {
-                                        if (resp.status == 'ok') {
-                                            var pg = parseInt($('#now-page').html());
-                                            getMessageList(pg);
-                                        } else {
-                                            alert(resp.msg)
-                                        }
-                                    }
-                                });
-                            });
-                        });
-                        $(document).ready(function () {
-                            $('.sender-msg').click(function () {
-                                var key = $(this).attr('data-toggle');
-                                window.location.href = '/admin/message/?key='+key;
-                            });
-                        });
-
-                        $(document).ready(function () {
-                            $('.read-msg').click(function () {
-                                var key = $(this).attr('data-toggle');
-                                $.ajax({
-                                    url: '/admin/changeMessage/?key='+key,
-                                    error: function () {
-                                        alert('服务器错误')
-                                    },
-                                    success: function (resp) {
-                                        if (resp.status == 'ok') {
-                                            var pg = parseInt($('#now-page').html());
-                                            getMessageList(pg);
-                                            getmsgcount();
-                                        } else {
-                                            alert(resp.msg)
-                                        }
-                                    }
-                                });
-                            });
-                        });
-
-
+                        $('#success-send').attr('style', 'display: block;');
+                        $('#failed-send').attr('style', 'display: none;');
+                        $('#modal-msg').html('消息发送成功');
+                        $('#modal').modal();
                     } else {
-                        $('#user-list').append('内部服务器错误！');
+                        $('#success-send').attr('style', 'display: none;');
+                        $('#failed-send').attr('style', 'display: block;');
+                        $('#modal-msg').html(resp.msg);
+                        $('#modal').modal();
                     }
-
                 }
             });
-        }
-    </script>
+        });
+    });
+
+
+    function getMessageList(page) {
+        console.log(page);
+        $.ajax({
+            url: '/admin/getMessage/',
+            method: 'POST',
+            data: {page: page},
+            success: function (resp) {
+                //console.log(resp);
+                $('#msg-list').html('');
+                if (resp.status == 'ok') {
+                    var data = resp.data;
+
+
+                    for (var i = 0; i < data.length; i++) {
+                        var da = data[i];
+                        $('#msg-list').append('<div class="input-group input-group-sm"><input id="' + i + '" type="text" readonly class="form-control msg-title" value="' + da.title + '  来自：' + da.user_name + '       time：' + da.time + '" aria-describedby="sizing-addon3"><span style="font-size: x-small" class="sender-msg input-group-addon btn btn-warning" data-toggle="' + da.user_name + '" >回复</span><span style="font-size: x-small" class="read-msg input-group-addon btn btn-warning" data-toggle="' + da.id + '" id="read-' + da.id + '">标记为已读</span><span class="del-msg input-group-addon btn btn-warning" id="' + da.id + '">删除</span></div><span id="body-' + i + '" style="display: none;" class="list-group-item msg-body">' + da.body + '</br>    ---' + da.user_showname + '</span>');
+                        if (da.is_show == 1) {
+                            $('#read-' + da.id).attr('disabled', 'disabled');
+                            $('#read-' + da.id).html('已读');
+
+                        }
+                    }
+                    $('#msg-list').append('<span class="list-group-item"><ul class="pagination" id="page-list"></ul></span>');
+                    if (resp.all <= 3) {
+                        var pa_list = [];
+                        for (var i = 1; i <= resp.all; i++) {
+                            pa_list.push(i);
+                        }
+                    } else {
+                        if (resp.now == 1) {
+                            var pa_list = [1, 2, 3, '...', resp.all]
+                        } else {
+                            if (resp.now + 1 == resp.all) {
+                                var now_page = resp.now;
+                                var pa_list = [now_page - 2, now_page - 1, now_page, '...', resp.all]
+                            } else {
+                                if (resp.now == resp.all) {
+                                    var now_page = resp.now;
+                                    var pa_list = [1, '...', resp.all - 2, resp.all - 1, resp.all]
+                                } else {
+                                    var now_page = resp.now;
+                                    var pa_list = [now_page - 1, now_page, now_page + 1, '...', resp.all]
+                                }
+
+                            }
+                        }
+                    }
+                    $('#page-list').html('');
+                    if (resp.now == 1) {
+                        $('#page-list').append('<li style="pointer-events: none;"><a id="last-page" href="#"><</a></li>');
+                    } else {
+                        $('#page-list').append('<li><a id="last-page" href="#"><</a></li>');
+                    }
+                    for (var i = 0; i < pa_list.length; i++) {
+                        if (pa_list[i] == '...') {
+                            $('#page-list').append('<li style="pointer-events: none;"><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
+                        } else {
+
+
+                            if (pa_list[i] == resp.now) {
+                                $('#page-list').append('<li class="active"><a id="now-page" href="#">' + pa_list[i] + '</a></li>');
+                            } else {
+                                $('#page-list').append('<li><a class="page-ch" href="#">' + pa_list[i] + '</a></li>');
+                            }
+                        }
+                    }
+                    if (resp.now == resp.all) {
+                        $('#page-list').append('<li style="pointer-events: none;"><a id="next-page" href="#">></a></li>');
+                    } else {
+                        $('#page-list').append('<li><a id="next-page" href="#">></a></li>');
+                    }
+
+
+                    $(document).ready(function () {
+                        $('#last-page').click(function () {
+                            var pg = parseInt($('#now-page').html()) - 1;
+                            getMessageList(pg);
+                        });
+                        $('#next-page').click(function () {
+                            var pg = parseInt($('#now-page').html()) + 1;
+                            getMessageList(pg);
+                        });
+                        $('.page-ch').click(function () {
+                            var pg = parseInt($(this).html());
+                            getMessageList(pg);
+                        });
+                    });
+
+                    $('.msg-title').click(function () {
+                        key = $(this).attr('id');
+                        console.log(key);
+                        $('#body-' + key).toggle(100);
+                    });
+
+                    $(document).ready(function () {
+                        $('.del-msg').click(function () {
+                            var key = $(this).attr('id');
+                            $.ajax({
+                                url: '/admin/changeMessage/',
+                                method: 'post',
+                                data: {key: key},
+                                error: function () {
+                                    alert('服务器错误')
+                                },
+                                success: function (resp) {
+                                    if (resp.status == 'ok') {
+                                        var pg = parseInt($('#now-page').html());
+                                        getMessageList(pg);
+                                    } else {
+                                        alert(resp.msg)
+                                    }
+                                }
+                            });
+                        });
+                    });
+                    $(document).ready(function () {
+                        $('.sender-msg').click(function () {
+                            var key = $(this).attr('data-toggle');
+                            window.location.href = '/admin/message/?key=' + key;
+                        });
+                    });
+
+                    $(document).ready(function () {
+                        $('.read-msg').click(function () {
+                            var key = $(this).attr('data-toggle');
+                            $.ajax({
+                                url: '/admin/changeMessage/?key=' + key,
+                                error: function () {
+                                    alert('服务器错误')
+                                },
+                                success: function (resp) {
+                                    if (resp.status == 'ok') {
+                                        var pg = parseInt($('#now-page').html());
+                                        getMessageList(pg);
+                                        getmsgcount();
+                                    } else {
+                                        alert(resp.msg)
+                                    }
+                                }
+                            });
+                        });
+                    });
+
+
+                } else {
+                    $('#user-list').append('内部服务器错误！');
+                }
+
+            }
+        });
+    }
+</script>
 {% endblock %}
