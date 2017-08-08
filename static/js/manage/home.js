@@ -291,7 +291,7 @@ function getDetail(id) {
                 //$('audio').mediaelementplayer('#player'/* Options */);
                 $('#player').mediaelementplayer({
                     alwaysShowControls: true,
-                    features: ['playpause',  'progress', 'volume'],
+                    features: ['playpause',  'progress','current', 'duration', 'volume'],
                     audioVolume: 'horizontal',
                     startVolume: 0.8,
                     loop: true,

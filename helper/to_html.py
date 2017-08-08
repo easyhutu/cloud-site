@@ -10,7 +10,11 @@ def create_html(data, file_type):
         '.txt': type_txt,
         '.json': type_py,
         '.csv': type_py,
-        '.mp3': type_audio
+        '.mp3': type_audio,
+        '.jpg': type_image,
+        '.png': type_image,
+        '.gif': type_image,
+        '.bmp': type_image
     }
     get_type = ch.get(file_type)
     if get_type:
@@ -45,3 +49,8 @@ def type_txt(data):
 def type_audio(data):
     # return f'<audio src="{data}" preload="auto">mp3</audio>'
     return f'<audio id="player" src="{data}" type="audio/mp3" controls></audio>'
+
+
+# image <img src="" alt="">
+def type_image(data):
+    return f'<article><img src="{data}" alt="image" style="max-height: 100%; max-width: 100%"></article>'
