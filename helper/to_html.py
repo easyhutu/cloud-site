@@ -9,7 +9,8 @@ def create_html(data, file_type):
         '.py': type_py,
         '.txt': type_txt,
         '.json': type_py,
-        '.csv': type_py
+        '.csv': type_py,
+        '.mp3': type_audio
     }
     get_type = ch.get(file_type)
     if get_type:
@@ -35,8 +36,12 @@ def type_txt(data):
     add_p = []
     for da in data:
         add_p.append(f'<p>{da}</p>')
-    das = ''.join(add_p).replace('\b', '&nbsp;').replace('\t', '&nbsp;' * 4)
-    add_code = f'<pre>{das}</pre>'
+    das = ''.join(add_p).replace('\b', '&nbsp;').replace('\r', '<br>')
+    add_code = f'<article>{das}</article>'
     return add_code
 
 
+# audio <audio src="/mp3/juicy.mp3" preload="auto" />
+def type_audio(data):
+    # return f'<audio src="{data}" preload="auto">mp3</audio>'
+    return f'<audio id="player" src="{data}" type="audio/mp3" controls></audio>'

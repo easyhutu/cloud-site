@@ -10,6 +10,7 @@ from manage.views import *
 
 manage.add_url_rule('/home/', view_func=IndexPage.as_view('home'))
 manage.add_url_rule('/json/path/', view_func=GetFiles.as_view('path'))
+manage.add_url_rule('/json/detail/', view_func=FileDetail.as_view('detail'))
 manage.add_url_rule('/json/diskSize/', view_func=GetUseSize.as_view('diskSize'))
 manage.add_url_rule('/createFolder/', view_func=CreateFolder.as_view('createFolder'))
 manage.add_url_rule('/upload/', view_func=UploadFiles.as_view('upload'))

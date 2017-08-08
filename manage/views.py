@@ -30,7 +30,9 @@ import urllib.parse
 
 """
 POWER_FILES = ['.py', '.txt', '.txt', '.json']
-MAX_SIZE = 5 * 1024 * 1024
+POWER_AUDIOS = ['.mp3']
+MAX_TXT = 5 * 1024
+MAX_AUDIO = 30 * 1024
 
 
 class IndexPage(MethodView):
@@ -115,6 +117,47 @@ class GetFiles(MethodView):
 
 
 class FileDetail(MethodView):
+    def get(self):
+        check_user = check_login()
+        if check_user is None:
+            return jsonify({'status': 'error', 'msg': 'no authority'})
+        if check_user == -1:
+            return jsonify({'status': 'error', 'msg': 'user is valid'})
+        else:
+            user_id = session.get('user_id')
+            file_id = request.args.get('file_id')
+            file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == file_id).one_or_none()
+            filename = file.file_name
+            user = admin.models.db.session.query(admin.models.Users).filter(
+                admin.models.Users.id == user_id).one_or_none()
+            user_folder = user.real_folder
+            path = f'static/disk/{user_folder}/{filename}'
+            with open(path, 'rb') as f:
+                data = f.read()
+            all_len = len(data)
+            header_tag = request.headers.get('If-Range', "slfjsdlfsfsd-sfdsdlfsd-sfdskf")
+            header_range = request.headers.get('Range')
+            start_b = int(header_range.split('=')[-1].split('-')[0])
+            try:
+                end_b = int(header_range.split('=')[-1].split('-')[-1])
+            except:
+                end_b = ''
+            if end_b == '':
+                resp = make_response(data[start_b:])
+            else:
+                resp = make_response(data[start_b:end_b])
+            #resp.status = '206'
+            resp.headers["Accept-Ranges"] = 'bytes'
+            resp.headers["Connection"] = 'Keep-Alive'
+            resp.headers["Content-Type"] = 'audio/mpeg'
+            resp.headers["Content-Length"] = (end_b - start_b) if end_b != '' else (all_len - start_b)
+            ends = end_b if end_b != '' else all_len
+            resp.headers["Content-Range"] = f'bytes {start_b}-{ends}/{all_len}'
+            resp.headers["ETag"] = header_tag
+
+
+            return resp
+
     def post(self):
         check_user = check_login()
         if check_user is None:
@@ -127,24 +170,40 @@ class FileDetail(MethodView):
             file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == file_id).one_or_none()
 
             if file:
-                if file.file_size < MAX_SIZE:
-                    if os.path.splitext(file.file_name)[-1] in POWER_FILES:
-                        user = admin.models.db.session.query(admin.models.Users).filter(
-                            admin.models.Users.id == user_id).one_or_none()
-                        path = 'static/disk/' + user.real_folder + '/' + file.file_name
-                        try:
-                            with open(path, encoding='utf8') as f:
-                                data = f.read()
-                            now_path = file.file_path + '/' + file.show_name
-                            da = create_html(data, os.path.splitext(file.file_name)[-1])
-                            return jsonify(
-                                {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:]})
-                        except:
-                            return jsonify(
-                                {'status': 'error', 'msg': 'No such file or directory'})
-                    else:
+                if file.file_size < MAX_AUDIO:
+                    if os.path.splitext(file.file_name)[-1] in POWER_AUDIOS:
+                        now_path = file.file_path + '/' + file.show_name
+                        url = f'/disk/json/detail/?file_id={file_id}'
+                        da = create_html(url, os.path.splitext(file.file_name)[-1])
                         return jsonify(
-                            {'status': 'error', 'msg': 'file type can not power'})
+                            {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:]})
+                    else:
+                        if file.file_size < MAX_TXT:
+                            if os.path.splitext(file.file_name)[-1] in POWER_FILES:
+                                user = admin.models.db.session.query(admin.models.Users).filter(
+                                    admin.models.Users.id == user_id).one_or_none()
+                                path = 'static/disk/' + user.real_folder + '/' + file.file_name
+                                try:
+                                    try:
+                                        with open(path, encoding='utf8') as f:
+                                            data = f.read()
+                                    except:
+                                        with open(path, encoding='GB18030') as f:
+                                            data = f.read()
+                                    now_path = file.file_path + '/' + file.show_name
+                                    da = create_html(data, os.path.splitext(file.file_name)[-1])
+                                    return jsonify(
+                                        {'status': 'ok', 'data': da, 'now_path': now_path,
+                                         'path': now_path.split('/')[1:]})
+                                except Exception as e:
+
+                                    return jsonify(
+                                        {'status': 'error', 'msg': f'No such file or directory\n {e}'})
+                            else:
+                                return jsonify(
+                                    {'status': 'error', 'msg': 'file type can not power'})
+                        else:
+                            return jsonify({'status': 'error', 'msg': 'file size math max'})
                 else:
                     return jsonify({'status': 'error', 'msg': 'file size math max'})
             else:

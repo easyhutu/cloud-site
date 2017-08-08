@@ -282,10 +282,22 @@ function getDetail(id) {
         },
         success: function (resp) {
             if (resp.status == 'ok') {
-                console.log(resp.data);
+                //console.log(resp.data);
                 createNva(resp);
                 var data = resp.data;
-                $('#diskList').html(data)
+
+                $('#diskList').html(data);
+                //audiojs.createAll();
+                //$('audio').mediaelementplayer('#player'/* Options */);
+                $('#player').mediaelementplayer({
+                    alwaysShowControls: true,
+                    features: ['playpause',  'progress', 'volume'],
+                    audioVolume: 'horizontal',
+                    startVolume: 0.8,
+                    loop: true,
+                    audioWidth: 400,
+                    audioHeight: 60
+                });
             } else {
                 console.log(resp.msg);
             }

@@ -15,8 +15,9 @@
     <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/manage/font_hehahutu/iconfont.css">
     <link rel="stylesheet" href="/bootstrap-fileinput/css/fileinput.min.css">
+    <link rel="stylesheet" href="/mediaelement/build/mediaelementplayer.min.css">
     {% block style %}
-    
+
     {% endblock %}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -32,7 +33,7 @@
     <!--左边隐藏-->
     <span class="left-bar" id="left-bar"><i class="fa fa-hand-o-left"></i></span>
     <div id="left-hiden">
-        <h4>{{ session['show_name']|truncate(8, '...')  if session['show_name'] else 'show name' }}</h4>
+        <h4>{{ session['show_name']|truncate(8, '...') if session['show_name'] else 'show name' }}</h4>
         <div class="logo"><img src="/img/logo.png" alt=""></div>
         <ul class="left-list" id="left-list">
             <li><a href="#"><i class="fa fa-cloud"></i>云盘</a>
@@ -47,7 +48,9 @@
                 <ul>
                     <li><a href="/admin/manageUsers/?key=group">组员列表</a></li>
                     <li><a href="{{ url_for('manage.group') }}">群组管理</a></li>
-{#                    <li><a href="#">文件变更</a></li>#}
+                    {#
+                    <li><a href="#">文件变更</a></li>
+                    #}
                 </ul>
             </li>
             <li><a href="#"><i class="fa fa-comments"></i> 消息</a>
@@ -69,10 +72,12 @@
                 <a href="#" class="sm-bar" id="sm-bar"><i class="iconfont">&#xe7bd;</i></a>
                 <div class="hidden-sm hidden-xs title-left">
                     <a href="{{ url_for('manage.home') }}" title="首页"><i class="iconfont">&#xe603;</i></a>
-                    <a href="{{ url_for('admin.userInfo') }}" title="设置" class="title-a"><i class="iconfont icon-shezhi"></i></a>
-                    <a href="{{ url_for('admin.message') }}" title="消息"><i class="iconfont">&#xe616;</i><span style="background-color: coral"
-                                                                                 id="msg-info"
-                                                                                 class="badge"></span></a>
+                    <a href="{{ url_for('admin.userInfo') }}" title="设置" class="title-a"><i
+                            class="iconfont icon-shezhi"></i></a>
+                    <a href="{{ url_for('admin.message') }}" title="消息"><i class="iconfont">&#xe616;</i><span
+                            style="background-color: coral"
+                            id="msg-info"
+                            class="badge"></span></a>
                 </div>
 
                 <div class="title-right">
@@ -88,7 +93,7 @@
             <div class="col-lg-12 content" id="content">
                 <!--标题-->
                 {% block content %}
-                
+
                 {% endblock %}
 
 
@@ -109,6 +114,8 @@
 
 <script src="/js/manage/index.js"></script>
 <script src="/js/manage/clipboard.min.js"></script>
+<script src="/js/manage/audio/audio.min.js"></script>
+<script src="/mediaelement/build/mediaelement-and-player.min.js"></script>
 
 {% block script %}
 
@@ -119,21 +126,21 @@
         new Clipboard('.btn');
     });
     function getmsgcount() {
-         $('#msg-info').html('');
+        $('#msg-info').html('');
         $.ajax({
             url: '/admin/getMessage/',
             error: function () {
                 console.log('error count');
             },
             success: function (resp) {
-                if(resp.status == 'ok'){
-                    if(resp.count == 0){
-                         $('#msg-info').html('')
-                    }else{
+                if (resp.status == 'ok') {
+                    if (resp.count == 0) {
+                        $('#msg-info').html('')
+                    } else {
                         $('#msg-info').html(resp.count)
                     }
 
-                }else{
+                } else {
                     $('#msg-info').html('')
                 }
 
