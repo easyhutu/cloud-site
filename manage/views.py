@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from flask.views import MethodView
 from manage.models import *
 from flask import jsonify, request, render_template, send_file, send_from_directory, session, redirect, url_for, \
-    make_response
+    make_response, Response
 import os, shutil
 from admin.login import check_login
 import admin.models
@@ -143,19 +143,22 @@ class FileDetail(MethodView):
                 all_len = len(data)
                 header_tag = request.headers.get('If-Range', str(time.time()))
                 header_range = request.headers.get('Range')
-                start_b = int(header_range.split('=')[-1].split('-')[0])
+                try:
+                    start_b = int(header_range.split('=')[-1].split('-')[0])
+                except:
+                    start_b = 0
                 try:
                     end_b = int(header_range.split('=')[-1].split('-')[-1])
                 except:
                     end_b = ''
                 if end_b == '':
-                    resp = make_response(data[start_b:])
+                    resp = Response(data[start_b:], 200, direct_passthrough=True)
                 else:
                     resp = make_response(data[start_b:end_b])
-                # resp.status = '206'
+                # resp.status = '200'
                 resp.headers["Accept-Ranges"] = 'bytes'
                 resp.headers["Connection"] = 'Keep-Alive'
-                resp.headers["Content-Type"] = 'audio/mpeg'
+                resp.headers["Content-Type"] = 'audio/mp3'
                 resp.headers["Content-Length"] = (end_b - start_b) if end_b != '' else (all_len - start_b)
                 ends = end_b if end_b != '' else all_len
                 resp.headers["Content-Range"] = f'bytes {start_b}-{ends}/{all_len}'
@@ -200,7 +203,8 @@ class FileDetail(MethodView):
                         url = f'/disk/json/detail/?file_id={file_id}&type=audio'
                         da = create_html(url, os.path.splitext(file.file_name)[-1])
                         return jsonify(
-                            {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:]})
+                            {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:],
+                             'url': url, 'title': os.path.splitext(file.file_name)[0]})
                     else:
                         return jsonify({'status': 'error', 'msg': 'file size math max'})
 

@@ -286,18 +286,60 @@ function getDetail(id) {
                 createNva(resp);
                 var data = resp.data;
 
+                // $('#diskList').html(data);
                 $('#diskList').html(data);
-                //audiojs.createAll();
-                //$('audio').mediaelementplayer('#player'/* Options */);
-                $('#player').mediaelementplayer({
-                    alwaysShowControls: true,
-                    features: ['playpause',  'progress','current', 'duration', 'volume'],
-                    audioVolume: 'horizontal',
-                    startVolume: 0.8,
-                    loop: true,
-                    audioWidth: 400,
-                    audioHeight: 60
+
+                // $('#player').mediaelementplayer({
+                //     alwaysShowControls: true,
+                //     features: ['playpause',  'progress','current', 'duration', 'volume'],
+                //     audioVolume: 'horizontal',
+                //     startVolume: 0.8,
+                //     loop: false,
+                //     audioWidth: 400,
+                //     audioHeight: 60,
+                //     end: function () {
+                //         alert('over')
+                //     }
+                // });
+
+                $(function () {
+
+                    var song = [
+                        {
+                            'cover': '/audio/images/cover2.jpg',
+                            'src': resp.url,
+                            'title': resp.title
+                        }
+                    ];
+
+                    var audioFn = audioPlay({
+                        song: song,
+                        autoPlay: true  //是否立即播放第一首，autoPlay为true且song为空，会alert文本提示并退出
+                    });
+
+                    /* 向歌单中添加新曲目，第二个参数true为新增后立即播放该曲目，false则不播放 */
+                    // audioFn.newSong({
+                    //     'cover': 'images/cover5.jpg',
+                    //     'src': 'http://webmp3-1253691995.costj.myqcloud.com/audio/baab.mp3',
+                    //     'title': 'B.A.A.B'
+                    // }, false);
+
+                    /* 暂停播放 */
+                    // audioFn.stopAudio();
+
+                    /* 开启播放 */
+                    // audioFn.playAudio();
+
+                    /* 选择歌单中索引为3的曲目(索引是从0开始的)，第二个参数true立即播放该曲目，false则不播放 */
+                    // audioFn.selectMenu(3,true);
+
+                    /* 查看歌单中的曲目 */
+                    console.log(audioFn.song);
+
+                    /* 当前播放曲目的对象 */
+                    console.log(audioFn.audio);
                 });
+
             } else {
                 console.log(resp.msg);
             }
