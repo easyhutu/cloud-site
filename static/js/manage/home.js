@@ -276,7 +276,7 @@ function getDetail(id) {
     $.ajax({
         url: '/disk/json/detail/',
         method: 'post',
-        data: {file_id: id},
+        data: {file_id: id, songs:$('#songs').val()},
         error: function () {
             console.log('服务器错误')
         },
@@ -290,7 +290,7 @@ function getDetail(id) {
                     // $('#diskList').html(data);
                     $('.audio-box').remove();
                     $('#diskList').append(data);
-
+                    $('#songs').val(resp.song_list);
                     // $('#player').mediaelementplayer({
                     //     alwaysShowControls: true,
                     //     features: ['playpause',  'progress','current', 'duration', 'volume'],

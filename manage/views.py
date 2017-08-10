@@ -199,7 +199,8 @@ class FileDetail(MethodView):
 
                 if os.path.splitext(file.file_name)[-1] in POWER_AUDIOS:
                     if file.file_size < MAX_AUDIO:
-                        songs_list = session.get('songs')
+                        sss = request.form.get('songs')
+                        songs_list = sss.split(';') if sss is not None else None
                         now_path = file.file_path + '/' + file.show_name
                         url = f'/disk/json/detail/?file_id={file_id}&type=audio'
                         da = create_html(url, '.audio')
@@ -225,12 +226,14 @@ class FileDetail(MethodView):
                                         'title': title
                                     }
                                     songs.append(song)
-                            session['songs'] = songs_list.append(file_id)
+                            songs_list.append(file_id)
                         else:
-                            session['songs'] = [file_id]
+                            songs_list = [file_id]
+
                         return jsonify(
                             {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:],
-                             'song': songs, 'now_title': os.path.splitext(file.file_name)[0], 'type': 'audio', 'song_list': songs_list})
+                             'song': songs, 'now_title': os.path.splitext(file.file_name)[0], 'type': 'audio',
+                             'song_list': ';'.join(songs_list)})
                     else:
                         return jsonify({'status': 'error', 'msg': 'file size math max'})
 

@@ -58,6 +58,7 @@ def type_image(data):
 
 
 audio_html = """
+<input type="hidden" id="songs">
 <div class="audio-box">
 		<div class="audio-container">
 			<div class="audio-view">
