@@ -10,11 +10,11 @@ def create_html(data, file_type):
         '.txt': type_txt,
         '.json': type_py,
         '.csv': type_py,
-        '.mp3': type_audio,
-        '.jpg': type_image,
-        '.png': type_image,
-        '.gif': type_image,
-        '.bmp': type_image
+
+        '.audio': type_audio,
+
+        '.image': type_image,
+
     }
     get_type = ch.get(file_type)
     if get_type:

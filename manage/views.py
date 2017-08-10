@@ -30,7 +30,7 @@ import urllib.parse
 
 """
 POWER_TXT = ['.py', '.txt', '.json', '.log', '.c']
-POWER_AUDIOS = ['.mp3', '.flac', '.ape', '.wav', '.aac']
+POWER_AUDIOS = ['.mp3', '.flac', '.ape', '.wav', '.aac', '.m4a']
 POWER_IMAGE = ['.jpg', '.png', '.gif', '.bmp']
 
 MAX_TXT = 5 * 1024
@@ -199,12 +199,38 @@ class FileDetail(MethodView):
 
                 if os.path.splitext(file.file_name)[-1] in POWER_AUDIOS:
                     if file.file_size < MAX_AUDIO:
+                        songs_list = session.get('songs')
                         now_path = file.file_path + '/' + file.show_name
                         url = f'/disk/json/detail/?file_id={file_id}&type=audio'
-                        da = create_html(url, os.path.splitext(file.file_name)[-1])
+                        da = create_html(url, '.audio')
+                        songs = []
+                        song = {
+                            'cover': '/audio/images/cover2.jpg',
+                            'src': url,
+                            'title': os.path.splitext(file.file_name)[0]
+                        }
+
+                        songs.append(song)
+                        if songs_list:
+
+                            for song_id in songs_list:
+                                file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id,
+                                                                         DiskFile.id == song_id).one_or_none()
+                                if file:
+                                    title = os.path.splitext(file.file_name)[0]
+                                    url = f'/disk/json/detail/?file_id={song_id}&type=audio'
+                                    song = {
+                                        'cover': '/audio/images/cover2.jpg',
+                                        'src': url,
+                                        'title': title
+                                    }
+                                    songs.append(song)
+                            session['songs'] = songs_list.append(file_id)
+                        else:
+                            session['songs'] = [file_id]
                         return jsonify(
                             {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:],
-                             'url': url, 'title': os.path.splitext(file.file_name)[0]})
+                             'song': songs, 'now_title': os.path.splitext(file.file_name)[0], 'type': 'audio', 'song_list': songs_list})
                     else:
                         return jsonify({'status': 'error', 'msg': 'file size math max'})
 
@@ -224,7 +250,7 @@ class FileDetail(MethodView):
                             da = create_html(data, os.path.splitext(file.file_name)[-1])
                             return jsonify(
                                 {'status': 'ok', 'data': da, 'now_path': now_path,
-                                 'path': now_path.split('/')[1:]})
+                                 'path': now_path.split('/')[1:], 'type': 'txt'})
                         except Exception as e:
 
                             return jsonify(
@@ -236,9 +262,10 @@ class FileDetail(MethodView):
                     if file.file_size < MAX_IMAGE:
                         now_path = file.file_path + '/' + file.show_name
                         url = f'/disk/json/detail/?file_id={file_id}&type=image'
-                        da = create_html(url, os.path.splitext(file.file_name)[-1])
+                        da = create_html(url, '.image')
                         return jsonify(
-                            {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:]})
+                            {'status': 'ok', 'data': da, 'now_path': now_path, 'path': now_path.split('/')[1:],
+                             'type': 'image'})
                     else:
                         return jsonify({'status': 'error', 'msg': 'file size math max'})
                 else:
