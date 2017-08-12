@@ -16,7 +16,7 @@ user_group：该文件是否向用户组开放
 
 
 class DiskFolder(db.Model):
-    __tablename_ = 'disk_folder'
+    __tablename__ = 'disk_folder'
     id = db.Column(db.INTEGER, primary_key=True)
     folder_name = db.Column(db.String(500))
     folder_path = db.Column(db.String(1000))
