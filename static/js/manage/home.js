@@ -38,7 +38,7 @@ $(document).ready(function () {
             var data = {path: $('#diskPath').val()};
             return data;
         },
-        allowedFileExtensions: ["txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+        allowedFileExtensions: ["apk","txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
         theme: "explorer",
         language: "zh",
         maxNumberOfFiles: 2,
