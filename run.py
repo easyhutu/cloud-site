@@ -37,29 +37,32 @@ def get_error():
 
 @app.route('/pycharmKey.exe/rpc/obtainTicket.action')
 def pycharm():
-    buildDate = request.args.get('buildDate')
-    buildNumber = request.args.get('buildNumber')
-    clientVersion = request.args.get('clientVersion')
-    hostName = request.args.get('hostName')
-    machineId = request.args.get('machineId')
-    productCode = request.args.get('productCode')
-    productFamilyId = request.args.get('productFamilyId')
-    salt = request.args.get('salt')
-    secure = request.args.get('secure')
-    # userName = request.args.get('userName')
-    userName = 'hehahutu'
-    version = request.args.get('version')
-    versionNumber = request.args.get('versionNumber')
-    url = f'http://103.72.166.182:41017/rpc/obtainTicket.action?buildDate={buildDate}&buildNumber={buildNumber}&clientVersion={clientVersion}&hostName={hostName}&machineId={machineId}&productCode={productCode}&productFamilyId={productFamilyId}&salt={salt}&secure={secure}&userName={userName}&version={version}&versionNumber={versionNumber}'
+    try:
+        buildDate = request.args.get('buildDate')
+        buildNumber = request.args.get('buildNumber')
+        clientVersion = request.args.get('clientVersion')
+        hostName = request.args.get('hostName')
+        machineId = request.args.get('machineId')
+        productCode = request.args.get('productCode')
+        productFamilyId = request.args.get('productFamilyId')
+        salt = request.args.get('salt')
+        secure = request.args.get('secure')
+        userName = request.args.get('userName')
+        # userName = 'hehahutu'
+        version = request.args.get('version')
+        versionNumber = request.args.get('versionNumber')
+        url = f'http://localhost:41017/rpc/obtainTicket.action?buildDate={buildDate}&buildNumber={buildNumber}&clientVersion={clientVersion}&hostName={hostName}&machineId={machineId}&productCode={productCode}&productFamilyId={productFamilyId}&salt={salt}&secure={secure}&userName={userName}&version={version}&versionNumber={versionNumber}'
 
-    print(url)
-    html = requests.get(url)
-    data = str(html.content).replace('ilanyu', 'hehahutu')
-    resp = make_response(html.content)
-    # resp.headers = html.headers
-    resp.headers['Content-Type'] = 'text/plain; charset=utf-8'
-    resp.headers['Server'] = 'fasthttp'
-    return resp
+        # print(url)
+        html = requests.get(url)
+        # data = str(html.content).replace('ilanyu', 'hehahutu')
+        resp = make_response(html.content)
+        # resp.headers = html.headers
+        resp.headers['Content-Type'] = 'text/plain; charset=utf-8'
+        resp.headers['Server'] = 'fasthttp'
+        return resp
+    except Exception as e:
+        return str(e)
 
 
 from manage.dropFiles import drop_files
