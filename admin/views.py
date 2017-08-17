@@ -12,6 +12,7 @@ from helper.creat_hash import creat_hash
 from admin.login import check_login
 from helper.sendemail import SendEmail
 import threading
+from config import WEB_URL
 
 
 class Login(MethodView):
@@ -184,7 +185,7 @@ class ChangeInfo(MethodView):
                 keys = creat_hash(str(time.clock()))
                 user.share_key = keys
                 db.session.commit()
-                urls = f'http://yuncluod.com:8000/admin/changeInfo/?uId={user_id}&email={email}&key={keys}'
+                urls = f'{WEB_URL}/admin/changeInfo/?uId={user_id}&email={email}&key={keys}'
                 body = f'您正在使用易云提供的服务，修改邮箱请点击链接,如您没有进行此操作，请忽略此邮件：　{urls}'
                 try:
                     em = SendEmail()
@@ -454,7 +455,7 @@ class FindPwd(MethodView):
             if user:
                 if user.email:
                     email = user.email
-                    urls = f'http://yuncluod.com:8000/admin/findPwd/?key={user.id}'
+                    urls = f'{WEB_URL}/admin/findPwd/?key={user.id}'
                     body = f'您正在使用易云提供的服务，点击此链接后您的账户密码将会重置为666666,如您没有进行此操作，请忽略此邮件：　{urls}'
                     user.register_key = 'ok'
                     db.session.commit()

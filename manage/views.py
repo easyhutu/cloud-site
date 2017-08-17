@@ -15,7 +15,7 @@ import zipfile, time
 from helper.creat_hash import creat_hash
 from helper.to_html import create_html
 import urllib.parse
-
+from config import WEB_URL
 """
 删除文件：
     针对文件会直接将其is_trash 设置为1,过期时间update_time 加30天，
@@ -716,7 +716,14 @@ class CreateShareUlr(MethodView):
                                                          ShareGroups.files == fi,
                                                          ShareGroups.user_id == user_id).one_or_none()
             if share:
-                return jsonify({'status': 'ok', 'msg': share.share_key})
+                check_date = share.vail_date - datetime.now()
+                if check_date.days >= 0:
+                    return jsonify({'status': 'ok', 'msg': share.share_key,
+                                    'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
+                else:
+                    db.session.delete(share)
+                    db.session.commit()
+                    return jsonify({'status': 'error', 'msg': ''})
             else:
                 return jsonify({'status': 'error', 'msg': ''})
         else:
@@ -842,7 +849,8 @@ class Share(MethodView):
                                        filenames=filenames,
                                        foldernames=foldernames)
             else:
-                return '抱歉您请求的页面不存在'
+                # return '抱歉您请求的分享页面已失效'
+                return render_template('manage/share.html', message='抱歉分享链接已失效或被删除')
 
 
 # 分享链接，下载
