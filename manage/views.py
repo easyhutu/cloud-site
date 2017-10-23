@@ -16,6 +16,8 @@ from helper.creat_hash import creat_hash
 from helper.to_html import create_html
 import urllib.parse
 from config import WEB_URL
+from helper.serializer import dumps_data, loads_data
+
 """
 删除文件：
     针对文件会直接将其is_trash 设置为1,过期时间update_time 加30天，
@@ -735,7 +737,8 @@ class CreateShareUlr(MethodView):
                                                              ShareGroups.files == file_id,
                                                              ShareGroups.user_id == user_id).one_or_none()
                 if share:
-                    return jsonify({'status': 'ok', 'msg': share.share_key})
+                    return jsonify(
+                        {'status': 'ok', 'msg': share.share_key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
                 else:
                     return jsonify({'status': 'error', 'msg': ''})
 
@@ -746,7 +749,7 @@ class CreateShareUlr(MethodView):
                                                              ShareGroups.files == 0,
                                                              ShareGroups.user_id == user_id).one_or_none()
                 if share:
-                    return jsonify({'status': 'ok', 'msg': share.share_key})
+                    return jsonify({'status': 'ok', 'msg': share.share_key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
                 else:
                     return jsonify({'status': 'error', 'msg': ''})
             else:
@@ -782,7 +785,7 @@ class CreateShareUlr(MethodView):
             share = ShareGroups(user_id, fo, fi, vail_date, share_key)
             db.session.add(share)
             db.session.commit()
-            return jsonify({'status': 'ok', 'msg': share_key})
+            return jsonify({'status': 'ok', 'msg': share_key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
         else:
 
             if 'file' in file:
@@ -793,7 +796,7 @@ class CreateShareUlr(MethodView):
                 share = ShareGroups(user_id, 0, file_id, vail_date, key)
                 db.session.add(share)
                 db.session.commit()
-                return jsonify({'status': 'ok', 'msg': key})
+                return jsonify({'status': 'ok', 'msg': key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
             elif 'folder' in file:
                 folder_id = file.split('.')[-1]
                 vail_date = datetime.now() + timedelta(days=90)
@@ -801,7 +804,7 @@ class CreateShareUlr(MethodView):
                 share = ShareGroups(user_id, folder_id, 0, vail_date, key)
                 db.session.add(share)
                 db.session.commit()
-                return jsonify({'status': 'ok', 'msg': key})
+                return jsonify({'status': 'ok', 'msg': key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
             else:
                 return jsonify({'status': 'ok', 'msg': '抱歉服务器遇到无法克服的错误'})
 
@@ -810,8 +813,9 @@ class CreateShareUlr(MethodView):
 class Share(MethodView):
     def get(self, key):
         share_file = db.session.query(ShareGroups).filter(ShareGroups.share_key == key).one_or_none()
-        reqfo = request.args.get('folderId')
-        if reqfo:
+        reqf = request.args.get('folderId')
+        if reqf:
+            reqfo = loads_data(reqf)
             name = admin.models.db.session.query(admin.models.Users.show_name).filter(
                 admin.models.Users.id == share_file.user_id).scalar()
             folder = db.session.query(DiskFolder).filter(DiskFolder.id == reqfo, DiskFolder.is_trash == 0).one_or_none()
@@ -821,12 +825,17 @@ class Share(MethodView):
                                                            DiskFile.is_trash == 0).all()
             foldernames = []
             filenames = []
+            folder_key = []
+            file_key = []
             for fo in folder_group:
+                folder_key.append(dumps_data(fo.id))
                 foldernames.append(fo)
             for fi in file_group:
+                file_key.append(dumps_data(fi.id))
+
                 filenames.append(fi)
             return render_template('manage/share.html', key=key, share_file=share_file, name=name, filenames=filenames,
-                                   foldernames=foldernames)
+                                   foldernames=foldernames, is_ok='ok', file_key=file_key, folder_key=folder_key)
 
         else:
             if share_file:
@@ -836,42 +845,54 @@ class Share(MethodView):
                 file = share_file.files
                 foldernames = []
                 filenames = []
+                folder_key = []
+                file_key = []
                 for fo in folder.split(','):
                     foname = db.session.query(DiskFolder).filter(DiskFolder.id == fo,
                                                                  DiskFolder.is_trash == 0).one_or_none()
                     if foname:
+                        folder_key.append(dumps_data(foname.id))
                         foldernames.append(foname)
                 for fi in file.split(','):
                     finame = db.session.query(DiskFile).filter(DiskFile.id == fi, DiskFile.is_trash == 0).one_or_none()
                     if finame:
+                        file_key.append(dumps_data(finame.id))
+
                         filenames.append(finame)
                 return render_template('manage/share.html', key=key, share_file=share_file, name=name,
                                        filenames=filenames,
-                                       foldernames=foldernames)
+                                       foldernames=foldernames, is_ok='ok', file_key=file_key, folder_key=folder_key)
             else:
                 # return '抱歉您请求的分享页面已失效'
-                return render_template('manage/share.html', message='抱歉分享链接已失效或被删除')
+                return render_template('manage/share.html', message='抱歉分享链接已失效或被删除', is_ok='error')
 
 
 # 分享链接，下载
 class ShareDownload(MethodView):
     def get(self, key):
-        fileid = request.args.get('fileId')
-        user_id = db.session.query(ShareGroups.user_id).filter(ShareGroups.share_key == key).scalar()
-        file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == fileid,
-                                                 DiskFile.is_trash == 0).one_or_none()
-        user_folder = admin.models.db.session.query(admin.models.Users.real_folder).filter(
-            admin.models.Users.id == user_id).scalar()
-        path = f'static/disk{user_folder}/{file.file_name}'
-        with open(path, 'rb') as f:
-            data = f.read()
-        resp = make_response(data)
-        name = urllib.parse.quote(file.show_name)
+        filei = request.args.get('fileId', '')
+        if len(filei) > 0:
+            try:
+                fileid = loads_data(filei)
+                user_id = db.session.query(ShareGroups.user_id).filter(ShareGroups.share_key == key).scalar()
+                file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == fileid,
+                                                         DiskFile.is_trash == 0).one_or_none()
+                user_folder = admin.models.db.session.query(admin.models.Users.real_folder).filter(
+                    admin.models.Users.id == user_id).scalar()
+                path = f'static/disk{user_folder}/{file.file_name}'
+                with open(path, 'rb') as f:
+                    data = f.read()
+                resp = make_response(data)
+                name = urllib.parse.quote(file.show_name)
 
-        resp.headers["Content-Disposition"] = f"attachment; filename*=utf-8''{name}"
-        resp.headers["Content-Type"] = f"application/octet-stream; charset=utf-8"
+                resp.headers["Content-Disposition"] = f"attachment; filename*=utf-8''{name}"
+                resp.headers["Content-Type"] = f"application/octet-stream; charset=utf-8"
 
-        return resp
+                return resp
+            except:
+                return '请求无效！'
+        else:
+            return '请求无效！'
 
 
 # 回收站

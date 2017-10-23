@@ -42,6 +42,9 @@
     </div>
 </nav>
 <div class="container">
+    {%if is_ok == 'ok' %}
+
+
     <div class="row">
         <div class="main">
             <div class="left" id="left">
@@ -52,28 +55,28 @@
                     </div>
                     <div class="panel-body">
                         <div class="panel-body"><a  href="/disk/share/{{ key }}/"><i class="fa fa-arrow-left"></i>根目录</a></div>
-                        <table class="table table-hover">
-                            {% for foldername in foldernames %}
+                            <table class="table table-hover">
+                                {% for foldername in foldernames %}
                                 <tr>
                                     <th>
                                         <a style="color: #9acfea"
-                                           href="/disk/share/{{ key }}/?folderId={{ foldername.id }}">{{ foldername.folder_name }}</a>
+                                           href="/disk/share/{{ key }}/?folderId={{ folder_key[loop.index0] }}">{{ foldername.folder_name }}</a>
                                     </th>
                                     <th><a  style="color: #9acfea" href="">-</a></th>
                                 </tr>
 
-                            {% endfor %}
-                            {% for filename in filenames %}
+                                {% endfor %}
+                                {% for filename in filenames %}
                                 <tr>
                                     <th style="color: #8c8c8c">{{ filename.show_name }}
 
                                     </th>
-                                    <th><a style="color: #9acfea" href="/disk/shareDownload/{{ key }}/?fileId={{ filename.id }}"><i class="fa fa-download">下载</i></a></th>
+                                    <th><a style="color: #9acfea" href="/disk/shareDownload/{{ key }}/?fileId={{ file_key[loop.index0] }}"><i class="fa fa-download">下载</i></a></th>
                                 </tr>
-                            {% endfor %}
+                                {% endfor %}
 
 
-                        </table>
+                            </table>
                     </div>
                 </div>
             </div>
@@ -82,6 +85,17 @@
                 -->
         </div>
     </div>
+    {%else%}
+    <div class="row">
+        <div class="main">
+            <h4>{{message}}</h4>
+            <!--
+                <div class="right hidden-xs panel">广告位，联系:mengjianhua93@gmail.com</div>
+                -->
+        </div>
+    </div>
+
+    {%endif%}
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="/js/bootstrap-3.3.7/jquery-3.2.0.min.js"></script>

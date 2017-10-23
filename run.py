@@ -3,16 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.contrib.fixers import ProxyFix
 import multiprocessing, threading
 import requests
-from config import MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOTS, MYSQL_DB
-
+from config import MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOTS, MYSQL_DB, SECRET_KEY
 
 app = Flask(__name__, static_url_path='')
 app.debug = True
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./db/cloud.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MYSQL_USERNAME}:{MYSQL_PASSWORD}@{MYSQL_HOTS}/{MYSQL_DB}?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./db/cloud.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MYSQL_USERNAME}:{MYSQL_PASSWORD}@{MYSQL_HOTS}/{MYSQL_DB}?charset=utf8'
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = 'saf678s@#%^&$%f97asfds6#^**$#af670*^&^&%&$254'
+app.secret_key = SECRET_KEY
 app.wsgi_app = ProxyFix(app.wsgi_app)
 db = SQLAlchemy(app)
 
