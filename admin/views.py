@@ -13,7 +13,7 @@ from admin.login import check_login
 from helper.sendemail import SendEmail
 import threading
 from config import WEB_URL
-
+from config import MSG_BODY_LENGTH, MSG_TITLE_LENGTH, IS_REGISTER
 
 class Login(MethodView):
     def get(self):
@@ -75,9 +75,8 @@ class Exit(MethodView):
 # 在config.json 中可配置 is_register 是false时不允许注册， 目前新创建用户不会有任何权限
 class Register(MethodView):
     def get(self):
-        with open('config.json', encoding='utf8') as f:
-            data = json.loads(f.read())
-        if data['is_register']:
+
+        if IS_REGISTER:
             return render_template('admin/register.html')
         else:
             return '抱歉，管理员关闭了注册通道！'
@@ -517,7 +516,8 @@ class Messages(MethodView):
         body = request.form.get('body')
         sender = db.session.query(Users).filter(Users.id == user_id).one_or_none()
         if author and title and body:
-            if len(author) > 20 or len(title) > 20 or len(body) > 300:
+
+            if len(author) > 20 or len(title) > MSG_TITLE_LENGTH or len(body) > MSG_BODY_LENGTH:
                 return jsonify({'status': 'error', 'msg': '输入字符过长'})
             else:
 

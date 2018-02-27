@@ -31,14 +31,14 @@ $(document).ready(function () {
     });
 
 
-    //maxFileSize 文件大小单位k
+    //maxFileSize 文件大小单位k, geshi
     $('#upload-file').fileinput({
         uploadUrl: '/disk/upload/',
         uploadExtraData: function (previewId, index) {
             var data = {path: $('#diskPath').val()};
             return data;
         },
-        allowedFileExtensions: ["apk","txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
+        allowedFileExtensions: ["html", "htm", "apk", "txt", "rar", "py", "json", "pdf", "xml", "csv", "xlsx", "xls", "log", "mp4", "rmvb", "png", "jpg", "pptx", "zip", "tar", "mp3", "mp4", "docx", "exe", "mm", "xmind"],
         theme: "explorer",
         language: "zh",
         maxNumberOfFiles: 2,
@@ -66,6 +66,7 @@ $(document).ready(function () {
         $('#upload-modal').modal();
     });
 });
+
 function checkall() {
     var check = document.getElementsByName('check-addr');
     var allcheck = document.getElementById('check-box').checked;
@@ -83,6 +84,7 @@ function createFolder() {
     $('#modal-del').attr('style', 'display: none');
     $('#modal').modal();
 }
+
 function submitCreateFolder() {
     var folder = $('#folder_name').val();
     var path = $('#diskPath').val();
@@ -149,6 +151,7 @@ function getList(key) {
     requestData(pa);
 
 }
+
 function navGetList(key) {
     var path = '?diskPath=' + $('#this' + key).val();
     //console.log(path);
@@ -158,6 +161,7 @@ function navGetList(key) {
         requestData(path)
     }
 }
+
 function requestData(pa) {
     $.ajax({
         url: '/disk/json/path/' + pa,
@@ -229,7 +233,7 @@ function requestData(pa) {
                         },
                         success: function (resp) {
                             if (resp.status == 'ok') {
-                                $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;<input type="text" id="shareUrl" value="'+resp.url+'" > <button class="btn btn-xs bg-success" data-clipboard-target="#shareUrl"><i class="fa fa-copy"></i></button>');
+                                $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;<input type="text" id="shareUrl" value="' + resp.url + '" > <button class="btn btn-xs bg-success" data-clipboard-target="#shareUrl"><i class="fa fa-copy"></i></button>');
                                 $('#share-submit').attr('disabled', 'disabled');
 
                             } else {
@@ -251,6 +255,7 @@ function requestData(pa) {
         }
     });
 }
+
 function createNva(resp) {
     $('#path').html('');
     $('#path').append('<li></li>');
@@ -272,11 +277,12 @@ function createNva(resp) {
         }
     }
 }
+
 function getDetail(id) {
     $.ajax({
         url: '/disk/json/detail/',
         method: 'post',
-        data: {file_id: id, songs:$('#songs').val()},
+        data: {file_id: id, songs: $('#songs').val()},
         error: function () {
             console.log('服务器错误')
         },
@@ -345,3 +351,95 @@ function getDetail(id) {
         }
     });
 }
+
+$(document).ready(function () {
+    $('.repeat-share').click(function () {
+        var check = document.getElementsByName('check-addr');
+        var ch = [];
+        var data = [];
+        $.each(check, function (i, item) {
+            if (item.checked == true) {
+                ch.push(i);
+                data.push($('.check' + i).attr('data-toggle'));
+            }
+
+
+        });
+        //console.log(data);
+        if (ch.length > 0) {
+            $.ajax({
+                url: '/disk/createShareUrl/?key=' + data,
+                method: 'get',
+                datatype: 'json',
+                error: function () {
+
+                },
+                success: function (resp) {
+                    if (resp.status == 'ok') {
+                        $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;<input type="text" id="shareUrl" value="' + resp.url + '/" > <button class="btn btn-xs bg-success" data-clipboard-target="#shareUrl"><i class="fa fa-copy"></i></button>');
+                        $('#share-submit').attr('disabled', 'disabled');
+                    } else {
+                        $('#share-msg').html('<h4>点击确定即可创建分享链接</h4>');
+                        $('#share-val').val(data);
+                        $('#share-submit').removeAttr('disabled');
+                    }
+
+                }
+            });
+            $('#share-modal').modal();
+
+
+        } else {
+            alert('请选择勾选需要操作项')
+        }
+    });
+
+    $('.repeat-del').click(function () {
+        var check = document.getElementsByName('check-addr');
+        var ch = [];
+        var data = [];
+        $.each(check, function (i, item) {
+            if (item.checked == true) {
+                ch.push(i);
+                data.push($('.check' + i).attr('data-toggle'));
+            }
+
+
+        });
+        //console.log(data);
+        if (ch.length > 0) {
+            $('#modal-input').html('');
+            $('#modal-msg').html('确认删除选中的文件（目录）？');
+            $('#modal-val').val(data);
+            $('#modal-del').attr('style', 'display: block');
+
+            $('#modal').modal();
+        } else {
+            $('#modal-input').html('');
+            $('#modal-msg').html('请先选择文件(目录）！');
+            $('#modal-del').attr('style', 'display: none');
+            $('#modal').modal();
+        }
+    });
+    $('#share-submit').click(function () {
+        var key = $('#share-val').val();
+        $.ajax({
+            url: '/disk/createShareUrl/',
+            method: 'POST',
+            data: {key: key},
+            datatype: 'json',
+            error: function () {
+                $('#share-msg').html('抱歉获取数据错误');
+            },
+            success: function (resp) {
+                if (resp.status == 'ok') {
+                    $('#share-msg').html('该链接默认有效期为90天,您也可以随时在设置中关闭所有分享：<br>&nbsp;<input type="text" id="shareUrl" value="' + resp.url + '" > <button class="btn btn-xs bg-success" data-clipboard-target="#shareUrl"><i class="fa fa-copy"></i></button>');
+                    $('#share-submit').attr('disabled', 'disabled');
+                } else {
+                    $('#share-msg').html(resp.msg);
+                }
+
+            }
+        });
+    });
+});

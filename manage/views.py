@@ -749,7 +749,8 @@ class CreateShareUlr(MethodView):
                                                              ShareGroups.files == 0,
                                                              ShareGroups.user_id == user_id).one_or_none()
                 if share:
-                    return jsonify({'status': 'ok', 'msg': share.share_key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
+                    return jsonify(
+                        {'status': 'ok', 'msg': share.share_key, 'url': f'{WEB_URL}/disk/share/{share.share_key}/'})
                 else:
                     return jsonify({'status': 'error', 'msg': ''})
             else:
@@ -814,6 +815,7 @@ class Share(MethodView):
     def get(self, key):
         share_file = db.session.query(ShareGroups).filter(ShareGroups.share_key == key).one_or_none()
         reqf = request.args.get('folderId')
+        refile = request.args.get('fileId')
         if reqf:
             reqfo = loads_data(reqf)
             name = admin.models.db.session.query(admin.models.Users.show_name).filter(
@@ -836,6 +838,24 @@ class Share(MethodView):
                 filenames.append(fi)
             return render_template('manage/share.html', key=key, share_file=share_file, name=name, filenames=filenames,
                                    foldernames=foldernames, is_ok='ok', file_key=file_key, folder_key=folder_key)
+        elif refile:
+            fileid = loads_data(refile)
+            name = admin.models.db.session.query(admin.models.Users.show_name).filter(
+                admin.models.Users.id == share_file.user_id).scalar()
+            user_id = db.session.query(ShareGroups.user_id).filter(ShareGroups.share_key == key).scalar()
+            file = db.session.query(DiskFile).filter(DiskFile.user_id == user_id, DiskFile.id == fileid,
+                                                     DiskFile.is_trash == 0).one_or_none()
+            user_folder = admin.models.db.session.query(admin.models.Users.real_folder).filter(
+                admin.models.Users.id == user_id).scalar()
+            if file.file_size > 1024 * 5:
+                return '抱歉文件尺寸大于5兆不支持在线查看，请选择下载'
+            else:
+                path = f'static/disk{user_folder}/{file.file_name}'
+
+                with open(path, 'r', encoding='utf8') as f:
+                    data = f.read()
+                # print(data[:10])
+                return render_template('manage/share_detail.html', name=name, data=data, share_file=share_file, key=key)
 
         else:
             if share_file:
