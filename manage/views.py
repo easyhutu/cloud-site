@@ -851,12 +851,13 @@ class Share(MethodView):
                 return '抱歉文件尺寸大于5兆不支持在线查看，请选择下载'
             else:
                 path = f'static/disk{user_folder}/{file.file_name}'
-
-                with open(path, 'r', encoding='utf8') as f:
-                    data = f.read()
-                # print(data[:10])
-                return render_template('manage/share_detail.html', name=name, data=data, share_file=share_file, key=key)
-
+                try:
+                    with open(path, 'r', encoding='utf8') as f:
+                        data = f.read()
+                    # print(data[:10])
+                    return render_template('manage/share_detail.html', name=name, data=data, share_file=share_file, key=key)
+                except:
+                    return '获取文件详情失败！！'
         else:
             if share_file:
                 name = admin.models.db.session.query(admin.models.Users.show_name).filter(
