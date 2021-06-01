@@ -42,7 +42,7 @@ six==1.10.0
 SQLAlchemy==1.1.9
 uritemplate==3.0.0
 urldecode==0.1
-urllib3==1.21.1
+urllib3==1.26.5
 Werkzeug==0.12.1
 wheel==0.30.0
 WTForms==2.1
