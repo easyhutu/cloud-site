@@ -44,6 +44,6 @@ uritemplate==3.0.0
 urldecode==0.1
 urllib3==1.21.1
 Werkzeug==0.12.1
-wheel==0.30.0
+wheel==0.38.1
 WTForms==2.1
 yarl==0.12.0
